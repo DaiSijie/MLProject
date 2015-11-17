@@ -12,6 +12,11 @@ public class SimpleCFLGenerator extends Generator{
 
     public final List<Symbol> listRepresentation;
     
+    
+    /**
+     * Implements the simple CFL a^n b^n
+     * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 2n+2
+     */
     public SimpleCFLGenerator(Symbol delimiter, Symbol a, Symbol b, int n){
         if(n < 0)
             throw new IllegalArgumentException("n has to be >= 0");

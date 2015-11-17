@@ -12,7 +12,11 @@ public class ComplicatedCFLGenerator extends Generator {
 
     private final List<Symbol> listRepresentation;
     
-    public ComplicatedCFLGenerator(Symbol delimiter, Symbol a, Symbol A, Symbol B, Symbol b, int n, int m){
+    /**
+     * Implements the complicated CFL a^n b^m B^m A^n
+     * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 2(m+n+1)
+     */
+    public ComplicatedCFLGenerator(Symbol delimiter, Symbol a, Symbol b, Symbol B, Symbol A,  int n, int m){
         listRepresentation = new ArrayList<>();
         
         for(int i = 0; i < 2*n+2*m+2; i++){
