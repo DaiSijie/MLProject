@@ -16,4 +16,8 @@ public abstract class Generator implements Iterable<Symbol>{
     
     public abstract List<Symbol> getListRepresentation();
     
+    
+    public Symbol getSymbolAt(int i){
+        return getListRepresentation().get(i);
+    }
 }
