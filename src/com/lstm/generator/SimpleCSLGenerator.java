@@ -7,11 +7,14 @@ package com.lstm.generator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SimpleCSLGenerator extends Generator {
     
     private final List<Symbol> listRepresentation;
+    private final Set<Symbol> alphabet;
     
     /**
      * Implements the simple CSL a^n b^n c^n
@@ -32,12 +35,21 @@ public class SimpleCSLGenerator extends Generator {
             else if(2*n < i && i <= 3*n)
                 listRepresentation.add(c);
         }
-
+        
+        alphabet = new HashSet<>();
+        alphabet.add(a);
+        alphabet.add(b);
+        alphabet.add(c);
     }
     
     @Override
     public List<Symbol> getListRepresentation() {
         return Collections.unmodifiableList(listRepresentation);
+    }
+
+    @Override
+    public Set<Symbol> getAlphabet() {
+        return Collections.unmodifiableSet(alphabet);
     }
 
 }

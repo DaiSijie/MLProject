@@ -17,4 +17,15 @@ public class Symbol {
         return this.name;
     }
     
+    public boolean equals(Object other){
+        if(!(other instanceof Symbol))
+            return false;
+        
+        return name.equals(((Symbol)other).name);
+    }
+    
+    public int hashCode(){
+        return name.hashCode();
+    }
+    
 }

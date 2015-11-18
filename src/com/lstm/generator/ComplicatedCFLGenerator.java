@@ -6,11 +6,15 @@
 package com.lstm.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ComplicatedCFLGenerator extends Generator {
 
     private final List<Symbol> listRepresentation;
+    private final Set<Symbol> alphabet;
     
     /**
      * Implements the complicated CFL a^n b^m B^m A^n
@@ -31,6 +35,12 @@ public class ComplicatedCFLGenerator extends Generator {
             else if(n+2*m < i && i <= 2*n+2*m)
                 listRepresentation.add(A);
         }
+        
+        alphabet = new HashSet<>();
+        alphabet.add(a);
+        alphabet.add(b);
+        alphabet.add(B);
+        alphabet.add(A);
     }
     
     
@@ -38,6 +48,13 @@ public class ComplicatedCFLGenerator extends Generator {
     @Override
     public List<Symbol> getListRepresentation() {
         return listRepresentation;
+    }
+
+
+
+    @Override
+    public Set<Symbol> getAlphabet() {
+        return Collections.unmodifiableSet(alphabet);
     }
     
     
