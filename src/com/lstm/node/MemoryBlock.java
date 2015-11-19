@@ -1,33 +1,51 @@
 package com.lstm.node;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by Wang on 11/15/2015.
  */
 public class MemoryBlock extends Node {
-
     private Gate inputGate;
     private Gate forgetGate;
     private Gate outputGate;
 
     private Cell[] cells;
+    private double[] peepholes;
 
     public MemoryBlock(int numCells)
     {
-        cells = new Cell[numCells];     // cells.Size default should be 1
+        cells = new Cell[numCells];     // cells.length should be 1
+        peepholes = new double[3];
     }
 
+    private void calculateinputGateActivation()
+    {
+        double cec = 0;
 
-    @Override
-    public void input(double[] inputVector) {
-        double sum = 0;
-        for (double element : inputVector)
+        for (Cell cell : cells)
         {
-            sum += element;
+            cec += cell.CellState;
         }
+
+        
     }
 
     @Override
-    public void activation() {
+    public void input(ArrayList<Double> inputWeights, double bias) {
+        double sumWeights = 0;
+        for (double weight : inputWeights)
+        {
+            sumWeights += weight;
+        }
+        sumWeights += bias;
+
+
+    }
+
+    @Override
+    public void activation(double value) {
 
     }
 
