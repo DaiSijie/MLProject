@@ -7,6 +7,9 @@ package com.lstm.generator;
 
 public class Symbol {
 
+    public static final Symbol START = new Symbol("S");
+    public static final Symbol END = new Symbol("T");
+    
     private final String name;
     
     public Symbol(String name){

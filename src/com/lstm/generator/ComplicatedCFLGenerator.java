@@ -20,12 +20,14 @@ public class ComplicatedCFLGenerator extends Generator {
      * Implements the complicated CFL a^n b^m B^m A^n
      * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 2(m+n+1)
      */
-    public ComplicatedCFLGenerator(Symbol delimiter, Symbol a, Symbol b, Symbol B, Symbol A,  int n, int m){
+    public ComplicatedCFLGenerator(Symbol start, Symbol a, Symbol b, Symbol B, Symbol A, Symbol end,  int n, int m){
         listRepresentation = new ArrayList<>();
         
         for(int i = 0; i < 2*n+2*m+2; i++){
-            if(i == 0 || i == 2*n+2*m+1)
-                listRepresentation.add(delimiter);
+            if(i == 0)
+                listRepresentation.add(start);
+            else if(i == 2*n+2*m+1)
+                listRepresentation.add(end);
             else if(0 < i && i <= n)
                 listRepresentation.add(a);
             else if(n < i && i <= n+m)

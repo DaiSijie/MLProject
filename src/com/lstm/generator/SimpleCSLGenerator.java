@@ -20,14 +20,16 @@ public class SimpleCSLGenerator extends Generator {
      * Implements the simple CSL a^n b^n c^n
      * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 3n+2
      */
-    public SimpleCSLGenerator(Symbol delimiter, Symbol a, Symbol b, Symbol c, int n){
+    public SimpleCSLGenerator(Symbol start, Symbol a, Symbol b, Symbol c, Symbol end, int n){
         if(n < 0)
             throw new IllegalArgumentException("n has to be >= 0");
                 
         listRepresentation = new ArrayList<>();
         for(int i = 0; i < 3*n+2; i++){
-            if(i == 0 || i == 3*n+1)
-                listRepresentation.add(delimiter);
+            if(i == 0)
+                listRepresentation.add(start);
+            else if(i == 3*n+1)
+                listRepresentation.add(end);
             else if(0 < i && i <= n)
                 listRepresentation.add(a);
             else if(n < i && i <= 2*n)
