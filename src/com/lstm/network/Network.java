@@ -21,6 +21,13 @@ public class Network {
         outputLayer = new ArrayList<>(numOutput);   // = 1
     }
 
+    public void train(){
+        //
+    }
+
+    public void classify(){
+
+    }
 
 
 

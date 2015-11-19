@@ -5,7 +5,7 @@ package com.lstm.node;
  */
 public class Cell extends Node {
 
-    private double cellState;
+    public double CellState;
 
     public Cell()
     {
@@ -14,7 +14,7 @@ public class Cell extends Node {
 
 
     @Override
-    public void input(double[] input) {
+    public void input(double[] inputVector) {
 
     }
 

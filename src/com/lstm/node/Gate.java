@@ -6,7 +6,7 @@ package com.lstm.node;
 public class Gate extends Node {
 
     @Override
-    public void input(double[] input) {
+    public void input(double[] inputVector) {
 
     }
 

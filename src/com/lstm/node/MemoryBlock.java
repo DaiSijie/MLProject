@@ -13,13 +13,17 @@ public class MemoryBlock extends Node {
 
     public MemoryBlock(int numCells)
     {
-        cells = new Cell[numCells];     //default should be 1
+        cells = new Cell[numCells];     // cells.Size default should be 1
     }
 
 
     @Override
-    public void input(double[] input) {
-
+    public void input(double[] inputVector) {
+        double sum = 0;
+        for (double element : inputVector)
+        {
+            sum += element;
+        }
     }
 
     @Override
