@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class OutputLayer {
 
-    public void forwardPass(ArrayList<InputNode> inputNodes) {
+    public void forwardPass(Double[][] weights, Double[][] biases, Double[][] outputValues) {
         //and parameter hidden nodes
     }
 

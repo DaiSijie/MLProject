@@ -10,18 +10,19 @@ import java.util.ArrayList;
  */
 public class InputLayer extends Layer {
 
-    public ArrayList<InputNode> inputNodes;
+    public InputLayer() {
 
-    public InputLayer(int numRows, int numColumns) {
-        super(numRows, numColumns);
     }
 
-    public void forwardPass(ArrayList<Double> input) {
-        inputNodes = new ArrayList<>(input.size());
+    public void forwardPass(ArrayList<Double> example, Double[][] outputValues) {
+        int i = 0;
 
-        for (double value : input)
+        for (double element : example)
         {
-            inputNodes.add(new InputNode(value));
+            for (int j = 0; j < outputValues[i].length; j++) {
+                outputValues[i][j] = element;
+            }
+            i++;
         }
     }
 

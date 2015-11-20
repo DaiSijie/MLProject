@@ -1,6 +1,5 @@
 package com.lstm.layers;
 
-import com.lstm.node.Gate;
 import com.lstm.node.InputNode;
 import com.lstm.node.MemoryBlock;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Wang on 11/15/2015.
  */
-public class HiddenLayer {
+public class HiddenLayer extends Layer {
 
     private ArrayList<MemoryBlock> memoryBlocks;
     private double inputNodesSum;
@@ -26,8 +25,9 @@ public class HiddenLayer {
         }
     }
 
-    public void forwardPass(ArrayList<InputNode> inputNodes) {
-        sumInputNodes(inputNodes);
+    public void forwardPass(Double[][] weights, Double[][] biases, Double[][] outputValues) {
+
+        //sumInputNodes(inputNodes);
 
         // Add inputNodesSum to each MemoryBlock input
         for (MemoryBlock memoryBlock : memoryBlocks)
@@ -35,7 +35,7 @@ public class HiddenLayer {
             memoryBlock.AddToInputs(inputNodesSum);
         }
 
-        
+
     }
 
     public void backwardPass() {
