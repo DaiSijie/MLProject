@@ -14,6 +14,11 @@ public class Gate extends Node {
 
     }
 
+    public void inputCells()
+    {
+
+    }
+
     @Override
     public void activation(double value) {
         activationValue = 1 / (1 + Math.exp(-value));

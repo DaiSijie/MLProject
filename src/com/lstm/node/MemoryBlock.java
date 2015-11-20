@@ -14,14 +14,24 @@ public class MemoryBlock extends Node {
     private Cell[] cells;
     private double[] peepholes;
 
+    private ArrayList<Double> inputs;
+
     public MemoryBlock(int numCells)
     {
         cells = new Cell[numCells];     // cells.length should be 1
         peepholes = new double[3];
+        inputs = new ArrayList<>(0);
+    }
+
+    public void AddToInputs(double value)
+    {
+        inputs.add(value);
     }
 
     private void calculateinputGateActivation()
     {
+
+
         double cec = 0;
 
         for (Cell cell : cells)
@@ -29,7 +39,7 @@ public class MemoryBlock extends Node {
             cec += cell.CellState;
         }
 
-        
+
     }
 
     @Override
