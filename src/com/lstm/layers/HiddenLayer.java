@@ -38,6 +38,17 @@ public class HiddenLayer extends Layer {
 
     }
 
+    private double computeCellInput(Double[][] weights, Double[][] biases, Double[][] outputValues, int column)
+    {
+        double cellInput = 0.0;
+
+        for (int row = 0; row < weights.length; row++) {
+            cellInput += weights[row][column] * outputValues[row][column];
+        }
+
+        return cellInput;
+    }
+
     public void backwardPass() {
 
     }

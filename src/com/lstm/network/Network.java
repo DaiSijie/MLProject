@@ -18,6 +18,13 @@ public class Network {
 
     /*
         Weights/OutputValues (10 x 7):
+
+        -----> assumption is that this network has only 1 memory block
+
+        --> left hand side is the "from"
+        ---> top is the "to"
+        ----> example: [0,0] is from input1 to memoryBlock
+
                         memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
         input1          -               -           -               -           -           -           -
         input2          -               -           -               -           -           -           -
@@ -43,13 +50,18 @@ public class Network {
 
     public Network(int numInput, int numMemoryBlock, int numOutput)
     {
-        weights = new Double[numInput + (numMemoryBlock * 4) + numOutput][(numMemoryBlock * 4) + numOutput];
         biases = new Double[1][(numMemoryBlock * 4) + numOutput];
+        weights = new Double[numInput + (numMemoryBlock * 4) + numOutput][(numMemoryBlock * 4) + numOutput];
         outputValues = new Double[numInput + (numMemoryBlock * 4) + numOutput][(numMemoryBlock * 4) + numOutput];
 
         inputLayer = new InputLayer();
         hiddenLayer = new HiddenLayer(numMemoryBlock);
         outputLayer = new OutputLayer();
+    }
+
+    private void initializeWeights()
+    {
+
     }
 
     public void train(ArrayList<Double> example){

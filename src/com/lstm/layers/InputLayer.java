@@ -14,15 +14,16 @@ public class InputLayer extends Layer {
 
     }
 
+    /* Loop through each element of the example and save the corresponding element into the table mapping */
     public void forwardPass(ArrayList<Double> example, Double[][] outputValues) {
-        int i = 0;
+        int row = 0;
 
         for (double element : example)
         {
-            for (int j = 0; j < outputValues[i].length; j++) {
-                outputValues[i][j] = element;
+            for (int column = 0; column < outputValues[row].length; column++) {
+                outputValues[row][column] = element;
             }
-            i++;
+            row++;
         }
     }
 
