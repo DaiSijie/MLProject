@@ -18,6 +18,7 @@ public class InputLayer extends Layer {
     public void forwardPass(ArrayList<Double> example, Double[][] outputValues) {
         int row = 0;
 
+        // each element has its own corresponding input node
         for (double element : example)
         {
             for (int column = 0; column < outputValues[row].length; column++) {
