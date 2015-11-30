@@ -9,11 +9,40 @@ import java.util.ArrayList;
  */
 public class OutputLayer {
 
-    public void forwardPass(Double[][] weights, Double[][] biases, Double[][] outputValues) {
-        //and parameter hidden nodes
+    public void forwardPass(Double[][] weights, Double[] biases, Double[][] outputValues, int numOutputs) {
+        //for each output node
+        for (int row = weights.length - numOutputs; row < weights.length ; row++) {
+            double outputNodeInput = weightedInputSummation(weights, biases, outputValues, weights[row].length - numOutputs, true);
+
+            for (int col = 0; col < weights[row].length; col++) {
+                outputValues[row][col] = outputNodeInput;
+            }
+        }
     }
 
     public void backwardPass() {
 
+    }
+
+    // TODO clean up implementation so that not copy/paste "weightedInputSummation" and "squashingFunction" from MemoryBlock
+    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column, boolean applySquash)
+    {
+        double cellInput = 0.0;
+
+        for (int row = 0; row < weights.length; row++) {
+            cellInput += weights[row][column] * outputValues[row][column];
+        }
+
+        cellInput += biases[column];
+
+        if (applySquash)
+            return squashingFunction(cellInput);
+        else
+            return cellInput;
+    }
+
+    private double squashingFunction(double input)
+    {
+        return 1 / (1 + Math.exp(-input));
     }
 }

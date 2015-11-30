@@ -17,14 +17,12 @@ public class HiddenLayer extends Layer {
         memoryBlocks = new ArrayList<>(numMemoryBlocks);
     }
 
-    public void forwardPass(Double[][] weights, Double[][] biases, Double[][] outputValues, int numInputs)
+    public void forwardPass(Double[][] weights, Double[] biases, Double[][] outputValues, int numInputs)
     {
         for (int i = 0; i < memoryBlocks.size(); i++) {
             memoryBlocks.get(i).ForwardPass(weights, biases, outputValues, i * 4, numInputs + (i * 4));
         }
     }
-
-
 
     public void backwardPass() {
 

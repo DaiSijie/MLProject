@@ -13,9 +13,12 @@ import com.lstm.node.Node;
  */
 public class Network {
     private Double[][] weights;         // for storing the weights between units
-    private Double[][] biases;          // for storing the biases for the units in the hidden and output layers
+    private Double[] biases;          // for storing the biases for the units in the hidden and output layers
     private Double[][] outputValues;    // for passing the values between the units/layers
 
+    private int numInput;
+    private int numMemBlock;
+    private int numOutput;
     /*
         Weights/OutputValues (10 x 7):
 
@@ -48,17 +51,24 @@ public class Network {
     HiddenLayer hiddenLayer;
     OutputLayer outputLayer;
 
-    public Network(int numInput, int numMemoryBlock, int numOutput)
+    public Network(int numIn, int numHidden, int numOut)
     {
-        biases = new Double[1][(numMemoryBlock * 4) + numOutput];
-        weights = new Double[numInput + (numMemoryBlock * 4) + numOutput][(numMemoryBlock * 4) + numOutput];
-        outputValues = new Double[numInput + (numMemoryBlock * 4) + numOutput][(numMemoryBlock * 4) + numOutput];
+        numInput = numIn;
+        numMemBlock = numHidden;
+        numOutput = numOut;
+
+        biases = new Double[(numMemBlock * 4) + numOutput];
+        weights = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
+        outputValues = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
 
         inputLayer = new InputLayer();
-        hiddenLayer = new HiddenLayer(numMemoryBlock);
+        hiddenLayer = new HiddenLayer(numMemBlock);
         outputLayer = new OutputLayer();
+
+        initializeWeights();
     }
 
+    // TODO initialize weights matrix
     private void initializeWeights()
     {
 
@@ -66,8 +76,8 @@ public class Network {
 
     public void train(ArrayList<Double> example){
         inputLayer.forwardPass(example, outputValues);
-        hiddenLayer.forwardPass(weights, biases, outputValues);
-        outputLayer.forwardPass(weights, biases, outputValues);
+        hiddenLayer.forwardPass(weights, biases, outputValues, numInput);
+        outputLayer.forwardPass(weights, biases, outputValues, numOutput);
     }
 
     public void classify(){

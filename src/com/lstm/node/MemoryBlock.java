@@ -7,9 +7,6 @@ import java.util.ArrayList;
  * Created by Wang on 11/15/2015.
  */
 public class MemoryBlock {
-    private Gate inputGate;
-    private Gate forgetGate;
-    private Gate outputGate;
 
     private double cellState;
     private double[] peepholes;
@@ -22,7 +19,7 @@ public class MemoryBlock {
 
     // TODO Peephole not implemented yet
 
-    public void ForwardPass(Double[][] weights, Double[][] biases, Double[][] outputValues, int memBlockColIndex, int memBlockRowIndex)
+    public void ForwardPass(Double[][] weights, Double[] biases, Double[][] outputValues, int memBlockColIndex, int memBlockRowIndex)
     {
         double inputGate = weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 1, true);
         double cellInput = inputGate * weightedInputSummation(weights, biases, outputValues, memBlockColIndex, true);
@@ -52,13 +49,15 @@ public class MemoryBlock {
         }
     }
 
-    private double weightedInputSummation(Double[][] weights, Double[][] biases, Double[][] outputValues, int column, boolean applySquash)
+    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column, boolean applySquash)
     {
         double cellInput = 0.0;
 
         for (int row = 0; row < weights.length; row++) {
             cellInput += weights[row][column] * outputValues[row][column];
         }
+
+        cellInput += biases[column];
 
         if (applySquash)
             return squashingFunction(cellInput);
