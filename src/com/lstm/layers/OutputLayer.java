@@ -12,7 +12,7 @@ public class OutputLayer {
     public void forwardPass(Double[][] weights, Double[] biases, Double[][] outputValues, int numOutputs) {
         //for each output node
         for (int row = weights.length - numOutputs; row < weights.length ; row++) {
-            double outputNodeInput = weightedInputSummation(weights, biases, outputValues, weights[row].length - numOutputs, true);
+            double outputNodeInput = squashingFunction(weightedInputSummation(weights, biases, outputValues, weights[row].length - numOutputs));
 
             for (int col = 0; col < weights[row].length; col++) {
                 outputValues[row][col] = outputNodeInput;
@@ -25,7 +25,7 @@ public class OutputLayer {
     }
 
     // TODO clean up implementation so that not copy/paste "weightedInputSummation" and "squashingFunction" from MemoryBlock
-    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column, boolean applySquash)
+    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column)
     {
         double cellInput = 0.0;
 
@@ -35,10 +35,7 @@ public class OutputLayer {
 
         cellInput += biases[column];
 
-        if (applySquash)
-            return squashingFunction(cellInput);
-        else
-            return cellInput;
+        return cellInput;
     }
 
     private double squashingFunction(double input)
