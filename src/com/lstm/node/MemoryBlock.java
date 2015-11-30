@@ -9,25 +9,25 @@ import java.util.ArrayList;
 public class MemoryBlock {
 
     private double cellState;
-    private double[] peepholes;
+    private double[] peepholeWeights;
 
     public MemoryBlock(int numCells)
     {
         cellState = 0.0;
-        peepholes = new double[3];
+        peepholeWeights = new double[3]; /* [0] inputGate [1] forgetGate [2] outputGate */
     }
 
-    // TODO Peephole not implemented yet
+    // TODO Peephole initialization not implemented yet
 
     public void ForwardPass(Double[][] weights, Double[] biases, Double[][] outputValues, int memBlockColIndex, int memBlockRowIndex)
     {
-        double inputGate = weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 1, true);
-        double cellInput = inputGate * weightedInputSummation(weights, biases, outputValues, memBlockColIndex, true);
+        double inputGate = squashingFunction(weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 1) + getPeepHole(0));
+        double cellInput = inputGate * squashingFunction(weightedInputSummation(weights, biases, outputValues, memBlockColIndex));
 
-        double forgetGate = weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 2, true);
+        double forgetGate = squashingFunction(weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 2) + getPeepHole(1));
         cellState = (cellState * forgetGate) + cellInput;
 
-        double outputGate = weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 3, true);
+        double outputGate = squashingFunction(weightedInputSummation(weights, biases, outputValues, memBlockColIndex + 3) + getPeepHole(2));
         double cellOutput = outputGate * cellState;
 
 
@@ -49,7 +49,7 @@ public class MemoryBlock {
         }
     }
 
-    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column, boolean applySquash)
+    private double weightedInputSummation(Double[][] weights, Double[] biases, Double[][] outputValues, int column)
     {
         double cellInput = 0.0;
 
@@ -59,10 +59,12 @@ public class MemoryBlock {
 
         cellInput += biases[column];
 
-        if (applySquash)
-            return squashingFunction(cellInput);
-        else
-            return cellInput;
+        return cellInput;
+    }
+
+    private double getPeepHole(int peepholeIndex)
+    {
+        return cellState * peepholeWeights[peepholeIndex];
     }
 
     private double squashingFunction(double input)

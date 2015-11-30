@@ -13,8 +13,10 @@ import com.lstm.node.Node;
  */
 public class Network {
     private Double[][] weights;         // for storing the weights between units
-    private Double[] biases;          // for storing the biases for the units in the hidden and output layers
+    private Double[] biases;            // for storing the biases for the units in the hidden and output layers
     private Double[][] outputValues;    // for passing the values between the units/layers
+
+    private double alpha;               // learning rate
 
     private int numInput;
     private int numMemBlock;
@@ -22,7 +24,7 @@ public class Network {
     /*
         Weights/OutputValues (10 x 7):
 
-        -----> assumption is that this network has only 1 memory block
+        -----> assumption in this illustration is that this network has only 1 memory block
 
         --> left hand side is the "from"
         ---> top is the "to"
@@ -51,7 +53,7 @@ public class Network {
     HiddenLayer hiddenLayer;
     OutputLayer outputLayer;
 
-    public Network(int numIn, int numHidden, int numOut)
+    public Network(int numIn, int numHidden, int numOut, double learningRate)
     {
         numInput = numIn;
         numMemBlock = numHidden;
@@ -64,6 +66,8 @@ public class Network {
         inputLayer = new InputLayer();
         hiddenLayer = new HiddenLayer(numMemBlock);
         outputLayer = new OutputLayer();
+
+        alpha = learningRate;
 
         initializeWeights();
     }
