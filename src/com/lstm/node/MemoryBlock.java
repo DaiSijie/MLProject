@@ -71,4 +71,32 @@ public class MemoryBlock {
     {
         return 1 / (1 + Math.exp(-input));
     }
+
+    private double new1(double old1, double a, double b, double c, double d){
+        return old1 * a + dg(b)*c*d;
+    }
+
+    private double new2(double old2, double a, double b, double c, double d){
+        return old2 * a + g(b)*dg(c)*d;
+    }
+
+    private double new3(double old3, double a, double b, double c, double d){
+        return old3 * a + g(b)*dg(c)*d;
+    }
+
+    private double new4(double old4, double a, double b, double c, double d){
+        return old4 * a + b*dg(c)*d;
+    }
+
+    private double new5(double old5, double a, double b, double c, double d){
+        return old5 * a + b*dg(c)*d;
+    }
+
+    private double g(double z){
+        return 1/(1-Math.exp(-z));
+    }
+
+    private double dg(double z){
+        return -Math.exp(-z)/((1-Math.exp(-z))*(1-Math.exp(-z)));
+    }
 }

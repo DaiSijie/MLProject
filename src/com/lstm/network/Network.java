@@ -82,6 +82,10 @@ public class Network {
         inputLayer.forwardPass(example, outputValues);
         hiddenLayer.forwardPass(weights, biases, outputValues, numInput);
         outputLayer.forwardPass(weights, biases, outputValues, numOutput);
+
+        outputLayer.backwardPass();
+        hiddenLayer.backwardPass();
+        inputLayer.backwardPass();
     }
 
     public void classify(){
