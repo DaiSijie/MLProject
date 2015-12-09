@@ -2,6 +2,7 @@ package com.lstm.network;
 
 import com.lstm.datastructures.ForwardPassCache;
 import com.lstm.generator.Generator;
+import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.training.BackwardPass;
 import com.lstm.training.DerivativeComputation;
@@ -13,6 +14,7 @@ public class Network {
   
     private final DerivativeCache derivativeCache;
     private final ForwardPassCache forwardCache;
+    private final BackwardPassCache backwardCache;
 
     private final ForwardPass forwardPass;
     private final DerivativeComputation derivativeComputation;
@@ -24,10 +26,11 @@ public class Network {
         this.derivativeCache = new DerivativeCache();        
         //the number of cells is always 1, and the number of input is equal to the number of input
         this.forwardCache = new ForwardPassCache(numInput, numMemBlock, 1, numInput);
+        this.backwardCache = new BackwardPassCache();
 
         this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
         this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock);
-        this.backwardPass = new BackwardPass(derivativeCache, forwardCache);
+        this.backwardPass = new BackwardPass(derivativeCache, forwardCache, backwardCache, numInput, numMemBlock, learningRate);
 
         //init everything
         forwardPass.init();
@@ -48,7 +51,7 @@ public class Network {
     private void doRound(double[] input){
         forwardPass.doRound(input);
         derivativeComputation.doRound();
-        backwardPass.doRound(input);
+        backwardPass.doRound();
     }
 
     public boolean classify(String str) {
