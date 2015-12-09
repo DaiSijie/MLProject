@@ -1,0 +1,30 @@
+/*
+ *	Author:      Gilbert Maystre
+ *	Date:        Dec 9, 2015
+ */
+
+package com.lstm.network;
+
+public final class Functions {
+
+    private Functions(){
+        
+    }
+    
+    public static double f(double z){
+        return 0;
+    }
+    
+    public static double g(double z){
+        return 0;
+    }
+    
+    public static double df(double z){
+        return 0;
+    }
+    
+    public static double dg(double z){
+        return 0;
+    }
+    
+}

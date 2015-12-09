@@ -1,8 +1,8 @@
 package com.lstm.network.layers;
 
-import com.lstm.network.PragmaticCache;
-
 import java.util.ArrayList;
+
+import com.lstm.datastructures.DerivativeCache;
 
 /**
  * Created by Wang on 11/15/2015.
@@ -14,7 +14,7 @@ public class InputLayer extends Layer {
     }
 
     /* Loop through each element of the example and save the corresponding element into the table mapping */
-    public void forwardPass(PragmaticCache pragmaticCache, ArrayList<Double> example) {
+    public void forwardPass(DerivativeCache pragmaticCache, ArrayList<Double> example) {
         int inputIndex = 0;
 
         for (double element : example)

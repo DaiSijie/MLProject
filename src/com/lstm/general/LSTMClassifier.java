@@ -10,7 +10,7 @@ import com.lstm.generator.Generator;
 public class LSTMClassifier {
 
     public void train(){
-        //to implement
+        //Specify here the network, construct an instance and call train on it.
     }
     
     public boolean classify(Generator generator){

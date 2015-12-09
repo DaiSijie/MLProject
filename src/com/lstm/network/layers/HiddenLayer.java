@@ -1,6 +1,6 @@
 package com.lstm.network.layers;
 
-import com.lstm.network.PragmaticCache;
+import com.lstm.datastructures.DerivativeCache;
 
 /**
  * Created by Wang on 11/15/2015.
@@ -12,7 +12,7 @@ public class HiddenLayer extends Layer {
 
     }
 
-    public void forwardPass(PragmaticCache pragmaticCache)
+    public void forwardPass(DerivativeCache pragmaticCache)
     {
         // Assuming only 1 cell in each Memory Block.
         for (int block_j = 0; block_j < pragmaticCache.getNumMemBlock(); block_j++) {
