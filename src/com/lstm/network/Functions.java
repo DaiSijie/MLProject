@@ -12,7 +12,7 @@ public final class Functions {
     }
     
     public static double f(double z){
-        return 0;
+        return 1 / (1 + Math.exp(-z));
     }
     
     public static double g(double z){

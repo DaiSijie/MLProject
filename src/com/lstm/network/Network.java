@@ -1,27 +1,16 @@
 package com.lstm.network;
 
-import java.util.ArrayList;
-
 import com.lstm.datastructures.ForwardPassCache;
+import com.lstm.generator.Generator;
 import com.lstm.datastructures.DerivativeCache;
-import com.lstm.network.layers.HiddenLayer;
-import com.lstm.network.layers.InputLayer;
-import com.lstm.network.layers.OutputLayer;
 import com.lstm.training.BackwardPass;
 import com.lstm.training.DerivativeComputation;
 import com.lstm.training.ForwardPass;
 
-/**
- * Created by Wang on 11/15/2015.
- */
 public class Network {
     
     private final int numInput;
-    private final int numHidden;
-    private final int numMemBlock;
-    private final int numOutput;
-    private final double alpha;
-    
+  
     private final DerivativeCache derivativeCache;
     private final ForwardPassCache forwardCache;
 
@@ -29,22 +18,14 @@ public class Network {
     private final DerivativeComputation derivativeComputation;
     private final BackwardPass backwardPass;
     
-    InputLayer inputLayer;
-    HiddenLayer hiddenLayer;
-    OutputLayer outputLayer;
-
-
-    public Network(int numInput, int numMemBlock, double learningRate, Generator gen) {
+    public Network(int numInput, int numMemBlock, double learningRate, Generator gen) {    
         this.numInput = numInput;
-        this.numHidden = numMemBlock;
-        this.numMemBlock = numMemBlock;
-        this.alpha = learningRate;
         
         this.derivativeCache = new DerivativeCache();        
         //the number of cells is always 1, and the number of input is equal to the number of input
         this.forwardCache = new ForwardPassCache(numInput, numMemBlock, 1, numInput);
 
-        this.forwardPass = new ForwardPass();
+        this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
         this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock);
         this.backwardPass = new BackwardPass(derivativeCache, forwardCache);
 
@@ -53,61 +34,36 @@ public class Network {
         derivativeComputation.init();
         backwardPass.init();
         
-        train()
-    }
-
-
-    
-    public void train(ArrayList<Double> example) {
-        inputLayer.forwardPass(derivativeCache, example);
-        hiddenLayer.forwardPass(derivativeCache);
-        outputLayer.forwardPass(derivativeCache);
-
-        outputLayer.backwardPass();
-        hiddenLayer.backwardPass();
-        inputLayer.backwardPass();
-    }
-
-    public void classify() {
-
-    }
-
-    private double g(double z) {
-        return 1 / (1 + Math.exp(-z));
-    }
-
-    // Todo check that formula is correct
-    private double dg(double z) {
-        return -Math.exp(-z) / ((1 - Math.exp(-z)) * (1 - Math.exp(-z)));
-    }
-
-    
-    private void backwardpass(double[] targetY, double[] actualY){
-        double[] deltas = new double[numOutput];
-        
-        for(int i = 0; i < numOutput; i++){
-            double netk = 1; //fill
-            deltas[i] = dg(netk) * (targetY[i] - actualY[i]);
-        }  
+        //and train
+        train(gen);
     }
     
-    private double[] computeDeltasOut(int j, double[] deltas){
-        if(deltas.length != numOutput)
-            throw new IllegalArgumentException("bad size for deltas");
+    private void train(Generator gen){
+        //for all token in the generator, figure out the input from the generator and do a round
+        double[] input = null;
         
-        double[] toReturn = new double[numMemBlock];
-        
-        for(int jj = 0; j < toReturn.length; j++){
-            double sum = 0;
+        doRound(input); 
+    }
+    
+    private void doRound(double[] input){
+        forwardPass.doRound(input);
+        derivativeComputation.doRound();
+        backwardPass.doRound(input);
+    }
+
+    public boolean classify(String str) {
+        for(char c : str.toCharArray()){
+            //somehow transform the char into an array
+            double[] input = null;
+            
+            forwardPass.doRound(input);
+            for(int k = 0; k < numInput; k++){
+                if(input[k] != forwardCache.getOutputNodeOutput(k))
+                    return false;
+            }
+            
         }
         
-        
-        
-        return null;
+        return true;
     }
-
-
 }
-
-
-

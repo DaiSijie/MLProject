@@ -18,16 +18,20 @@ public class BackwardPass {
         this.forwardCache = forwardPassCache;
     }
         
-    public void doRound(){
+    public void doRound(double[] targetY){
         
     }
     
-    private void backwardpass(double[] targetY, double[] actualY){
+    public void init(){
+        
+    }
+    
+    private void backwardpass(double[] targetY){
         double[] deltas = new double[numOutput];
         
         for(int i = 0; i < numOutput; i++){
             double netk = 1; //fill
-            deltas[i] = dg(netk) * (targetY[i] - actualY[i]);
+            deltas[i] = dg(netk) * (targetY[i] - forwardCache.getOutputNodeOutput(i));
         }  
     }
     

@@ -15,13 +15,7 @@ public class InputLayer extends Layer {
 
     /* Loop through each element of the example and save the corresponding element into the table mapping */
     public void forwardPass(DerivativeCache pragmaticCache, ArrayList<Double> example) {
-        int inputIndex = 0;
 
-        for (double element : example)
-        {
-            pragmaticCache.storeInputNodeOutput(inputIndex, element);
-            inputIndex++;
-        }
     }
 
     public void backwardPass() {
