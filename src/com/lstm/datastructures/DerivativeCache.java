@@ -2,9 +2,6 @@ package com.lstm.datastructures;
 
 import java.util.HashMap;
 
-/**
- * Created by Wang on 12/6/2015.
- */
 public class DerivativeCache {
     private final HashMap<Integer, Double> cellDerivative;
 

@@ -1,8 +1,3 @@
-/*
- *	Author:      Gilbert Maystre
- *	Date:        Dec 9, 2015
- */
-
 package com.lstm.datastructures;
 
 import java.util.HashMap;

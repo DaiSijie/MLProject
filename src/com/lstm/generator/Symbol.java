@@ -1,8 +1,3 @@
-/*
- *	Author:      Gilbert Maystre
- *	Date:        Nov 16, 2015
- */
-
 package com.lstm.generator;
 
 public class Symbol {

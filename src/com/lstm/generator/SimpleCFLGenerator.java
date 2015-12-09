@@ -1,8 +1,3 @@
-/*
- *	Author:      Gilbert Maystre
- *	Date:        Nov 17, 2015
- */
-
 package com.lstm.generator;
 
 import java.util.ArrayList;
