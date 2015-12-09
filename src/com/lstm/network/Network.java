@@ -18,12 +18,13 @@ public class Network {
     HiddenLayer hiddenLayer;
     OutputLayer outputLayer;
 
-    public Network(int numIn, int numHidden, int numOut, double learningRate) {
+    // numCells = 1
+    public Network(int numIn, int numHidden, int numCells, int numOut, double learningRate) {
         inputLayer = new InputLayer();
-        hiddenLayer = new HiddenLayer(numHidden);
+        hiddenLayer = new HiddenLayer();
         outputLayer = new OutputLayer();
 
-        new PragmaticCache(numIn, numHidden, numOut);
+        new PragmaticCache(numIn, numHidden, numCells, numOut);
 
         alpha = learningRate;
 

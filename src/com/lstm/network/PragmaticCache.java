@@ -8,43 +8,8 @@ import java.util.HashMap;
 public class PragmaticCache {
     private int numInput;
     private int numMemBlock;
+    private int numCells;
     private int numOutput;
-
-    private Double[][] weights;         // for storing the weights between units
-    private Double[] biases;            // for storing the biases for the units in the hidden and output layers
-    private Double[][] outputValues;    // for passing the values between the units/layers
-
-    //Todo implement the peephole and cellState (move from MemoryBlock) so can be used by the Derivatives
-    private Double[][] peephole;
-    private Double[][] cellStates;
-
-    /*
-        Weights/OutputValues (10 x 7):
-
-        -----> assumption in this illustration is that this network has only 1 memory block
-
-        --> left hand side is the "from"
-        ---> top is the "to"
-        ----> example: [0,0] is from input1 to memoryBlock
-
-                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
-        input1          -               -           -               -           -           -           -
-        input2          -               -           -               -           -           -           -
-        input3          -               -           -               -           -           -           -
-        memoryBlock     -               -           -               -           -           -           -
-        inGate          -               -           -               -           -           -           -
-        forgetGate      -               -           -               -           -           -           -
-        outGate         -               -           -               -           -           -           -
-        output1         -               -           -               -           -           -           -
-        output2         -               -           -               -           -           -           -
-        output3         -               -           -               -           -           -           -
-    */
-
-    /*
-        Biases (1 x 7):
-                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
-        value           -               -           -               -           -           -           -
-    */
 
     private final HashMap<Integer, Double> cellDerivative;
 
@@ -54,7 +19,7 @@ public class PragmaticCache {
     private final HashMap<Integer, Double> forgetGateDerivativeA;
     private final HashMap<Integer, HashMap<Integer, Double>> forgetGateDerivativeB;
 
-    public PragmaticCache(int numInput, int numMemBlock, int numOutput) {
+    public PragmaticCache(int numInput, int numMemBlock, int numCellsInMemBlock, int numOutput) {
         this.cellDerivative = new HashMap<>();
 
         this.inputGateDerivativeA = new HashMap<>();
@@ -65,11 +30,14 @@ public class PragmaticCache {
 
         this.numInput = numInput;
         this.numMemBlock = numMemBlock;
+        this.numCells = numCellsInMemBlock;
         this.numOutput = numOutput;
 
         this.biases = new Double[(numMemBlock * 4) + numOutput];
         this.weights = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
         this.outputValues = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
+
+        this.memoryBlocks = new HashMap<>();
     }
 
     public int getNumInput() {
@@ -78,6 +46,10 @@ public class PragmaticCache {
 
     public int getNumMemBlock() {
         return numMemBlock;
+    }
+
+    public int getNumCells() {
+        return numCells;
     }
 
     public int getNumOutput() {
@@ -112,6 +84,8 @@ public class PragmaticCache {
         inputGateDerivativeA.put(j, value);
     }
 
+
+
     public void storeInputGateDerivativeB(int j, int vprime, double value) {
         if (!inputGateDerivativeB.containsKey(j))
             inputGateDerivativeB.put(j, new HashMap<Integer, Double>());
@@ -130,6 +104,50 @@ public class PragmaticCache {
         forgetGateDerivativeB.get(j).put(vprime, value);
     }
 
+
+    private Double[][] weights;         // for storing the weights between units
+    private Double[] biases;            // for storing the biases for the units in the hidden and output layers
+    private Double[][] outputValues;    // for passing the values between the units/layers
+
+    private final HashMap<Integer, HashMap<Integer, Double[]>> memoryBlocks;
+
+    /*
+        Weights/OutputValues (10 x 7):
+
+        -----> assumption in this illustration is that this network has only 1 memory block
+
+        --> left hand side is the "from"
+        ---> top is the "to"
+        ----> example: [0,0] is from input1 to memoryBlock
+
+                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
+        input1          -               -           -               -           -           -           -
+        input2          -               -           -               -           -           -           -
+        input3          -               -           -               -           -           -           -
+        memoryBlock     -               -           -               -           -           -           -
+        inGate          -               -           -               -           -           -           -
+        forgetGate      -               -           -               -           -           -           -
+        outGate         -               -           -               -           -           -           -
+        output1         -               -           -               -           -           -           -
+        output2         -               -           -               -           -           -           -
+        output3         -               -           -               -           -           -           -
+    */
+
+    /*
+        Biases (1 x 7):
+                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
+        value           -               -           -               -           -           -           -
+    */
+
+    /*
+        MemoryBlocks (memoryBlock_j x cells_v x 4):
+                       cellState       inGatePeephole      forgetGatePeephole      outGatePeephole
+        cell           -               -                   -                       -
+    */
+
+    // TODO Clean up code below so is condensed. Keeping this way for now for debugging purposes.
+
+    // TODO Peephole initialization not implemented yet
 
     private double weightedInputSummation(int column)
     {
@@ -263,4 +281,70 @@ public class PragmaticCache {
         }
     }
     /* End Output Layer */
+
+    public double getCellState(int j, int vprime)
+    {
+        return memoryBlocks.get(j).get(vprime)[0];
+    }
+
+    public double getInputGatePeephole(int j, int vprime)
+    {
+        return memoryBlocks.get(j).get(vprime)[1];
+    }
+
+    public double getForgetGatePeephole(int j, int vprime)
+    {
+        return memoryBlocks.get(j).get(vprime)[2];
+    }
+
+    public double getOutputGatePeephole(int j, int vprime)
+    {
+        return memoryBlocks.get(j).get(vprime)[3];
+    }
+
+    public void storeCellState(int j, int vprime, double value)
+    {
+        if (!memoryBlocks.containsKey(j))
+        {
+            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
+            memoryBlocks.get(j).put(vprime, new Double[4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[0] = value;
+    }
+
+    public void storeInputGatePeephole(int j, int vprime, double value)
+    {
+        if (!memoryBlocks.containsKey(j))
+        {
+            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
+            memoryBlocks.get(j).put(vprime, new Double[4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[1] = value;
+    }
+
+    public void storeForgetGatePeephole(int j, int vprime, double value)
+    {
+        if (!memoryBlocks.containsKey(j))
+        {
+            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
+            memoryBlocks.get(j).put(vprime, new Double[4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[2] = value;
+    }
+
+    public void storeOutputGatePeephole(int j, int vprime, double value)
+    {
+        if (!memoryBlocks.containsKey(j))
+        {
+            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
+            memoryBlocks.get(j).put(vprime, new Double[4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[3] = value;
+    }
+
+
 }
