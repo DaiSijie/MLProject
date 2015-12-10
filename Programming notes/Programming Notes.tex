@@ -1,0 +1,184 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=A4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{tikz} % to graph
+\tikzset{
+  treenode/.style  	= 	{shape=rectangle, rounded corners,
+                     	draw, align=center,
+                     	top color=white, bottom color=blue!20},
+  predicat/.style  	= 	{treenode, bottom color=red!30},
+  conclusion/.style	= 	{treenode},
+}
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{url}
+
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\usepackage{graphicx}
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+%\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+%\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+%\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Johns Hopkins University - Introduction to Machine Learning} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Programming Notes \\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Charlie Wang, Gilbert Maystre} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+\newpage
+
+\section{From paper notation to Java data structures}
+
+\subsection{Forward pass}
+
+\begin{center}
+\begin{tabular}{|l|l|} 
+	\hline
+ 		Paper expression & Java\\ 
+ 	\hline
+ 	\hline
+ 		$net_{in_j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+  		$y^{in_j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$net_{\varphi j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$y^{\varphi j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$net_{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$s_{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$net_{out_j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$y^{out_j}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$y^{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$net_k$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+   		$y^k$ & \verb!ForwardPassCache.?! \\ 
+ 	\hline
+\end{tabular}
+\end{center}
+
+\subsection{Derivative computation}
+
+\begin{center}
+\begin{tabular}{|l|l|} 
+	\hline
+ 	Paper expression & Java\\ 
+ 	\hline
+	\hline
+ 		$dS_{cm}^{jv}$ & \verb!DerivativeCache.getCellDerivative(j, m)! \\ 
+	\hline
+ 		$dS_{in,m}^{jv}$ & \verb!DerivativeCache.getInputGateDerivativeA(j, m)! \\ 
+	\hline
+  		$dS_{in,c_{j}^{v'}}^{jv}$ & \verb!DerivativeCache.getInputGateDerivativeB(j, vprime)! \\ 
+	\hline
+  		$dS_{\varphi m}^{jv}$ & \verb!DerivativeCache.getForgetGateDerivativeA(j, m)! \\ 
+	\hline
+  		$dS_{\varphi,c_{j}^{v'}}^{jv}$ & \verb!DerivativeCache.getForgetGateDerivativeB(j, vprime)! \\ 
+	\hline
+\end{tabular}
+\end{center}
+
+\subsection{Backward pass}
+\begin{center}
+\begin{tabular}{|l|l|} 
+	\hline
+ 	Paper expression & Java\\ 
+ 	\hline
+	\hline
+ 		$\Delta w_{km}$ & \verb!BackwardPassCache.getOutputUnit(k,m)! \\ 
+ 	\hline
+ 		$\Delta w_{out,m}$ & \verb!BackwardPassCache.getOutputGate(j, m)! \\ 
+ 	\hline
+ 		$\Delta w_{out, c_j^v}$ & \verb!BackwardPassCache.getOutputGateC(j)! \\ 
+ 	\hline
+ 		$\Delta w_{in,m}$ & \verb!BackwardPassCache.getInputGate(j, m)! \\
+ 	\hline
+ 		$\Delta w_{in, c_j^{v'}}$ & \verb!BackwardPassCache.getInputGateC(j, vprime)! \\
+ 	\hline
+ 		$\Delta w_{\varphi m}$ & \verb!BackwardPassCache.getForgetGate(j, m)! \\
+ 	\hline
+ 		$\Delta w_{\varphi c_j^{v'}}$ & \verb!BackwardPassCache.getForgetGateC(j, vprime)! \\
+ 	\hline
+ 		$\Delta w_{c_j^v m}$ & \verb!BackwardPassCache.getCell(j, m)! \\ 
+	\hline
+\end{tabular}
+\end{center}
+
+
+
+
+
+\newpage
+
+
+\section{Results}
+
+\newpage
+
+
+\section{Discussion of the results}
+
+\newpage
+
+
+\section{Conclusion}
+
+
+\end{document}
