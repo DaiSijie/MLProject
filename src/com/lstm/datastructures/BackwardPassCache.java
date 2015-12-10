@@ -132,8 +132,6 @@ public class BackwardPassCache {
         return outputUnit.get(k).get(m);
     }
     
-    
-
     public void storeDelta(int k, double value){
         delta.put(k, value);
     }

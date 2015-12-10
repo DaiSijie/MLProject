@@ -1,49 +1,73 @@
 package com.lstm.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-public class SimpleCFLGenerator extends Generator{
-
-    public final List<Symbol> listRepresentation;
-    public final Set<Symbol> alphabet;
+public class SimpleCFLGenerator implements Generator{
+    
+    private int stringNo = 0;
+    private int indexNo = 0;
+    
+    private final int limit;
     
     /**
-     * Implements the simple CFL a^n b^n
+     * Implements the simple CFL a^n b^n for String n = 1 (SabT) to n = limit (Sa...ab...bT)
      * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 2n+2
      */
-    public SimpleCFLGenerator(Symbol start, Symbol a, Symbol b, Symbol end, int n){
-        if(n < 0)
-            throw new IllegalArgumentException("n has to be >= 0");
+    public SimpleCFLGenerator(int limit){
+        if(limit < 1)
+            throw new IllegalArgumentException("limit has to be >= 1");
         
-        this.alphabet = new HashSet<>();
-        alphabet.add(a);
-        alphabet.add(b);
+        this.stringNo = 1;
+        this.indexNo = 0;
         
-        listRepresentation = new ArrayList<>();
-        for(int i = 0; i < 2*n+2; i++){
-            if(i == 0)
-                listRepresentation.add(start);
-            else if(i == 2*n+1)
-                listRepresentation.add(end);
-            else if(0 < i && i <= n)
-                listRepresentation.add(a);
-            else if(0 < n && i <= 2*n)
-                listRepresentation.add(b);
-        }
+        this.limit = limit;
     }
     
-    @Override
-    public List<Symbol> getListRepresentation() {
-        return this.listRepresentation;
+    public boolean hasNext(){
+        return stringNo <= limit;
     }
-
-    @Override
-    public Set<Symbol> getAlphabet() {
-        return Collections.unmodifiableSet(alphabet);
+    
+    public char getNext(){
+        if(!hasNext())
+            throw new IllegalStateException("stream is finished");
+        
+        char toReturn = ' ';
+            
+        if(indexNo == 0){
+            indexNo++;
+            toReturn = 'S';
+        }
+        else if(indexNo == 2 * stringNo + 1){
+            indexNo = 0;
+            stringNo++; 
+            toReturn = 'T';
+        }
+        else if(0 < indexNo && indexNo <= stringNo){
+            indexNo++;
+            toReturn = 'a';
+        }
+        else if(stringNo < indexNo && indexNo <= 2*stringNo){
+            indexNo++;
+            toReturn = 'b';
+        }
+        
+        return toReturn;
     }
-
+    
+    public double[] nextAsVector(){
+        char next = getNext();
+        
+        double[] toReturn = new double[3];
+        if(next == 'S' || next == 'T')
+            toReturn[0] = 1;
+        else if(next == 'a')
+            toReturn[1] = 1;
+        else if(next == 'b')
+            toReturn[2] = 1;
+        
+        return toReturn;  
+    }
+    
+    public void restart(){
+        this.stringNo = 0;
+        this.indexNo = 0;
+    }
 }

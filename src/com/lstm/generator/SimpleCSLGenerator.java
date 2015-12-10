@@ -1,52 +1,84 @@
 package com.lstm.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-public class SimpleCSLGenerator extends Generator {
+public class SimpleCSLGenerator implements Generator {
     
-    private final List<Symbol> listRepresentation;
-    private final Set<Symbol> alphabet;
+    private final int limit;
+    
+    private int stringNo;
+    private int indexNo;
     
     /**
-     * Implements the simple CSL a^n b^n c^n
-     * Since there is a delimiter at the end and the begining of the string, the actual length of the generated sequence is 3n+2
+     * Implements the simple CSL a^n b^n c^n for n = 1 (SabcT) to n = limit (Sa...ab...bc...cT)
      */
-    public SimpleCSLGenerator(Symbol start, Symbol a, Symbol b, Symbol c, Symbol end, int n){
-        if(n < 0)
-            throw new IllegalArgumentException("n has to be >= 0");
-                
-        listRepresentation = new ArrayList<>();
-        for(int i = 0; i < 3*n+2; i++){
-            if(i == 0)
-                listRepresentation.add(start);
-            else if(i == 3*n+1)
-                listRepresentation.add(end);
-            else if(0 < i && i <= n)
-                listRepresentation.add(a);
-            else if(n < i && i <= 2*n)
-                listRepresentation.add(b);
-            else if(2*n < i && i <= 3*n)
-                listRepresentation.add(c);
+    public SimpleCSLGenerator(int limit){
+        if(limit < 1)
+            throw new IllegalArgumentException("limit has to be >= 1");
+        
+        this.limit = limit;
+        
+        this.stringNo = 1;
+        this.indexNo = 0;        
+    }
+
+    @Override
+    public boolean hasNext() {
+        return stringNo <= limit;
+    }
+
+    @Override
+    public char getNext() {
+        if(!hasNext())
+            throw new IllegalStateException("Stream empty");
+        
+        char toReturn = ' ';
+        
+        if(indexNo == 0){
+            indexNo++;
+            toReturn = 'S';
+        }
+        else if(indexNo == 3*stringNo + 1){
+            indexNo = 0;
+            stringNo++;
+            toReturn = 'T';
+        }
+        else if(0 < indexNo && indexNo <= stringNo){
+            indexNo++;
+            toReturn = 'a';
+        }
+        else if(stringNo <= indexNo && indexNo <= 2*stringNo){
+            indexNo++;
+            toReturn = 'b';
+        }
+        else if(2*stringNo < indexNo && indexNo <= 3*stringNo){
+            indexNo++;
+            toReturn = 'c';
         }
         
-        alphabet = new HashSet<>();
-        alphabet.add(a);
-        alphabet.add(b);
-        alphabet.add(c);
+        return toReturn;
+    }
+
+    @Override
+    public double[] nextAsVector() {
+        char next = getNext();
+        
+        double[] toReturn = new double[4];
+        
+        if(next == 'S' || next == 'T')
+            toReturn[0] = 1;
+        else if(next == 'a')
+            toReturn[1] = 1;
+        else if(next == 'b')
+            toReturn[2] = 1;
+        else if(next == 'c')
+            toReturn[3] = 1;
+        
+        return toReturn;
+    }
+
+    @Override
+    public void restart() {
+        this.stringNo = 0;
+        this.indexNo = 0;
     }
     
-    @Override
-    public List<Symbol> getListRepresentation() {
-        return Collections.unmodifiableList(listRepresentation);
-    }
-
-    @Override
-    public Set<Symbol> getAlphabet() {
-        return Collections.unmodifiableSet(alphabet);
-    }
-
 }

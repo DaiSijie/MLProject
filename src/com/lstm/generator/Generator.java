@@ -1,21 +1,17 @@
+/*
+ *	Author:      Gilbert Maystre
+ *	Date:        Dec 10, 2015
+ */
+
 package com.lstm.generator;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+public interface Generator {
 
-public abstract class Generator implements Iterable<Symbol>{
+    public boolean hasNext();
     
-    public abstract List<Symbol> getListRepresentation();
+    public char getNext();
     
-    public Iterator<Symbol> iterator(){
-        return getListRepresentation().iterator();
-    }
+    public double[] nextAsVector();
     
-    public Symbol getSymbolAt(int i){
-        return getListRepresentation().get(i);
-    }
-    
-    public abstract Set<Symbol> getAlphabet();
-    
+    public void restart();   
 }
