@@ -47,16 +47,19 @@ public class Network {
     private void train(Generator gen){
         //for all token in the generator, figure out the input from the generator and do a round
         double[] input = null;
+        double[] target = null;
         
-        doRound(input); 
+        doRound(input, target);
     }
     
-    private void doRound(double[] input){
+    private void doRound(double[] input, double[] target){
         forwardPass.doRound(input);
         derivativeComputation.doRound();
-        backwardPass.doRound();
+        backwardPass.doRound(target);
     }
 
+
+    //Learning and testing alternate: after each epoch (= 1000 training sequences) we freeze the weights and run a test.
     public boolean classify(String str) {
         for(char c : str.toCharArray()){
             //somehow transform the char into an array

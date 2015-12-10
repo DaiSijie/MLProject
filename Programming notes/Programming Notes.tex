@@ -89,11 +89,11 @@
  		Paper expression & Java\\ 
  	\hline
  	\hline
- 		$net_{in_j}$ & \verb!ForwardPassCache.getInputGateInput(j)! \\ 
+ 		$net_{in_j}$ & \verb!ForwardPassCache.getInputGateInput(j) + forwardCache.getInputGatePeephole(j,0)! \\
  	\hline
   		$y^{in_j}$ & \verb!ForwardPassCache.getInputGateOutput(j)! \\ 
  	\hline
-   		$net_{\varphi j}$ & \verb!ForwardPassCache.getForgetGateInput(j)?! \\ 
+   		$net_{\varphi j}$ & \verb!ForwardPassCache.getForgetGateInput(j) + forwardCache.getForgetGatePeephole(j,0)! \\
  	\hline
    		$y^{\varphi j}$ & \verb!ForwardPassCache.getForgetGateOutput(j)?! \\ 
  	\hline
@@ -101,7 +101,7 @@
  	\hline
    		$s_{c_j^v}$ & \verb!ForwardPassCache.getCellState(j)! \\ 
  	\hline
-   		$net_{out_j}$ & \verb!ForwardPassCache.getOutputGateInput(j)! \\ 
+   		$net_{out_j}$ & \verb!ForwardPassCache.getOutputGateInput(j) + forwardCache.getOutputGatePeephole(j,0)! \\
  	\hline
    		$y^{out_j}$ & \verb!ForwardPassCache.getOutputGateOutput(j)! \\ 
  	\hline
