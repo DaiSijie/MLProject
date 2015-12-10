@@ -58,6 +58,9 @@ public class ForwardPassCache {
         value           -               -           -               -           -           -           -
     */
 
+    //bias weights to input gate, forget gate and output gate are initialized with 1.0, 2.0 and 2.0. All other
+    //weights are initialized randomly in the range [ 0.1, 0.1].
+
     /*
         MemoryBlocks (memoryBlock_j x cells_v x 4):
                        cellState       inGatePeephole      forgetGatePeephole      outGatePeephole
