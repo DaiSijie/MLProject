@@ -37,17 +37,19 @@ public class ForwardPassCache {
         ---> top is the "to"
         ----> example: [0,0] is from input1 to memoryBlock
 
+        the YES/NO shows if there is a "unit-to-unit" connection. Only the cells with YES should have a weight
+
                         memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
-        input1          -               -           -               -           -           -           -
-        input2          -               -           -               -           -           -           -
-        input3          -               -           -               -           -           -           -
-        memoryBlock     -               -           -               -           -           -           -
-        inGate          -               -           -               -           -           -           -
-        forgetGate      -               -           -               -           -           -           -
-        outGate         -               -           -               -           -           -           -
-        output1         -               -           -               -           -           -           -
-        output2         -               -           -               -           -           -           -
-        output3         -               -           -               -           -           -           -
+        input1          YES             YES         YES             YES         YES         YES         YES
+        input2          YES             YES         YES             YES         YES         YES         YES
+        input3          YES             YES         YES             YES         YES         YES         YES
+        memoryBlock     YES             YES         YES             YES         YES         YES         YES
+        inGate          NO              NO          NO              NO          NO          NO          NO
+        forgetGate      NO              NO          NO              NO          NO          NO          NO
+        outGate         NO              NO          NO              NO          NO          NO          NO
+        output1         NO              NO          NO              NO          NO          NO          NO
+        output2         NO              NO          NO              NO          NO          NO          NO
+        output3         NO              NO          NO              NO          NO          NO          NO
     */
 
     /*
