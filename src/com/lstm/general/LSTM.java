@@ -12,6 +12,19 @@ import static com.lstm.generator.Symbol.*;
 public class LSTM {
 
     public static void main(String[] args){
+        
+        int experiment = new Integer(args[0]);
+        
+        /*
+         * Parse arg of the program: experiment 1 (easy CFL), 2 (hard CFL) or 3 (CSL)
+         * 
+         * Setup the Network and the Generator
+         * 
+         * Train the network on the generator
+         * 
+         * Test the trained network on a larger dataset. Output results
+         */
+        
         System.out.println("Examples: \n");
         
         System.out.println("Simple CFL a^n b^n");
