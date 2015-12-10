@@ -14,13 +14,16 @@ public class BackwardPass {
 
     private final int numInput;
     private final int numMemBlock;
+    private final int numSourceUnit;
     private final double alpha;
 
-    public BackwardPass(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, BackwardPassCache backwardPassCache, int numInput, int numMemBlock, double alpha){
+    public BackwardPass(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, BackwardPassCache backwardPassCache,
+            int numInput, int numMemBlock, double alpha, int numSourceUnit){
         this.derivativeCache = derivativeCache;
         this.forwardCache = forwardPassCache;
         this.backwardCache = backwardPassCache;
 
+        this.numSourceUnit = numSourceUnit;
         this.numInput = numInput;
         this.numMemBlock = numMemBlock;
         this.alpha = alpha;
@@ -71,8 +74,7 @@ public class BackwardPass {
 
     private void updateWeightsDeltas(){
         //compute general output units weights 
-        int what = 10; //fetch from array?
-        for(int m = 0; m < what; m++){
+        for(int m = 0; m < numSourceUnit; m++){
             for(int k = 0; k < numInput; k++){
                 double ym = 1; //fetch from array?
                 double deltak = backwardCache.getDelta(k);
@@ -94,8 +96,7 @@ public class BackwardPass {
     private void updateOutputGatesWeightsDeltas(int j){
         double deltaout = backwardCache.getDeltaOut(j);
 
-        int what = 10; //fetch from array?
-        for(int m = 0; m < what; m++){
+        for(int m = 0; m < numSourceUnit; m++){
             double ym = 1; //fetch from array?
             double woutm = alpha * deltaout * ym;
 
@@ -111,9 +112,8 @@ public class BackwardPass {
     private void updateInputGatesWeightDeltas(int j){
         double internalStateError = backwardCache.getInternalStateError(j);
 
-        int what = 10; //fetch from array?
-        for(int m = 0; m < what; m++){
-            double derivative = derivativeCache.getInputGateDerivativeA(m);
+        for(int m = 0; m < numSourceUnit; m++){
+            double derivative = derivativeCache.getInputGateDerivativeA(j, m);
             double deltawinm = alpha * derivative * internalStateError;
 
             backwardCache.storeInputGate(j, m, deltawinm);
@@ -131,9 +131,8 @@ public class BackwardPass {
     private void updateForgetGatesWeightDeltas(int j){
         double internalStateError = backwardCache.getInternalStateError(j);
 
-        int what = 10; //fetch from array?
-        for(int m = 0; m < what; m++){
-            double derivative = derivativeCache.getForgetGateDerivativeA(m);
+        for(int m = 0; m < numSourceUnit; m++){
+            double derivative = derivativeCache.getForgetGateDerivativeA(j, m);
             double deltawinm = alpha * derivative * internalStateError;
 
             backwardCache.storeForgetGate(j, m, deltawinm);
@@ -151,12 +150,11 @@ public class BackwardPass {
     private void updateCellsWeightDeltas(int j){
         double internalStateError = backwardCache.getInternalStateError(j);
         
-        int what = 10; //fetch from array?
-        for(int m = 0; m < what; m++){
-            double derivative = derivativeCache.getCellDerivative(m);
+        for(int m = 0; m < numSourceUnit; m++){
+            double derivative = derivativeCache.getCellDerivative(j, m);
+            double wcjvm = alpha * internalStateError * derivative;
             
-            //TODO: understand what m indexes...
-            
+            backwardCache.storeCell(j, m, wcjvm);            
         }
     }
 

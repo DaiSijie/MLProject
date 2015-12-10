@@ -33,7 +33,7 @@ public class Network {
 
         this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
         this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock, numberOfSourceUnit);
-        this.backwardPass = new BackwardPass(derivativeCache, forwardCache, backwardCache, numInput, numMemBlock, learningRate);
+        this.backwardPass = new BackwardPass(derivativeCache, forwardCache, backwardCache, numInput, numMemBlock, learningRate, numberOfSourceUnit);
 
         //init everything
         forwardPass.init();
