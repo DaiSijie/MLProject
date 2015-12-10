@@ -27,6 +27,9 @@ public class Network {
         //the number of cells is always 1, and the number of input is equal to the number of input
         this.forwardCache = new ForwardPassCache(numInput, numMemBlock, 1, numInput);
         this.backwardCache = new BackwardPassCache();
+        
+        int numberOfSourceUnit = numInput + numMemBlock;
+        int numberOfReceveirUnit = numInput + numMemBlock * 4;
 
         this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
         this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock);
