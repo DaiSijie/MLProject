@@ -32,7 +32,7 @@ public class Network {
         int numberOfReceveirUnit = numInput + numMemBlock * 4;
 
         this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
-        this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock);
+        this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock, numberOfSourceUnit);
         this.backwardPass = new BackwardPass(derivativeCache, forwardCache, backwardCache, numInput, numMemBlock, learningRate);
 
         //init everything
