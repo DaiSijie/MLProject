@@ -53,7 +53,7 @@ public class ForwardPass {
     
     private void outputLayer(){
         for (int i = 0; i < numInput; i++) {
-            double outputNodeInput = f(forwardCache.getOutputNodeInput(i));
+            double outputNodeInput = g(forwardCache.getOutputNodeInput(i));
             forwardCache.storeOutputNodeOutput(i, outputNodeInput);
         }
     }
