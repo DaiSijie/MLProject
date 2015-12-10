@@ -89,27 +89,27 @@
  		Paper expression & Java\\ 
  	\hline
  	\hline
- 		$net_{in_j}$ & \verb!ForwardPassCache.?! \\ 
+ 		$net_{in_j}$ & \verb!ForwardPassCache.getInputGateInput(j)! \\ 
  	\hline
-  		$y^{in_j}$ & \verb!ForwardPassCache.?! \\ 
+  		$y^{in_j}$ & \verb!ForwardPassCache.getInputGateOutput(j)! \\ 
  	\hline
-   		$net_{\varphi j}$ & \verb!ForwardPassCache.?! \\ 
+   		$net_{\varphi j}$ & \verb!ForwardPassCache.getForgetGateInput(j)?! \\ 
  	\hline
-   		$y^{\varphi j}$ & \verb!ForwardPassCache.?! \\ 
+   		$y^{\varphi j}$ & \verb!ForwardPassCache.getForgetGateOutput(j)?! \\ 
  	\hline
    		$net_{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
  	\hline
-   		$s_{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
+   		$s_{c_j^v}$ & \verb!ForwardPassCache.getCellState(j)! \\ 
  	\hline
-   		$net_{out_j}$ & \verb!ForwardPassCache.?! \\ 
+   		$net_{out_j}$ & \verb!ForwardPassCache.getOutputGateInput(j)! \\ 
  	\hline
-   		$y^{out_j}$ & \verb!ForwardPassCache.?! \\ 
+   		$y^{out_j}$ & \verb!ForwardPassCache.getOutputGateOutput(j)! \\ 
  	\hline
-   		$y^{c_j^v}$ & \verb!ForwardPassCache.?! \\ 
+   		$y^{c_j^v}$ & \verb!ForwardPassCache.getMemoryBlockOutput(j)! \\ 
  	\hline
-   		$net_k$ & \verb!ForwardPassCache.?! \\ 
+   		$net_k$ & \verb!ForwardPassCache.getOutputNodeInput(k)! \\ 
  	\hline
-   		$y^k$ & \verb!ForwardPassCache.?! \\ 
+   		$y^k$ & \verb!ForwardPassCache.getOutputNodeOutput(k)! \\ 
  	\hline
 \end{tabular}
 \end{center}
