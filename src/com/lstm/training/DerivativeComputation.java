@@ -11,19 +11,23 @@ public class DerivativeComputation {
     private final ForwardPassCache forwardCache;
     
     private final int numMemBlock;
+    private final int numSourceUnit;
     
-    public DerivativeComputation(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, int numMemBlock){
+    public DerivativeComputation(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, int numMemBlock, int numSourceUnit){
         this.derivativeCache = derivativeCache;
         this.forwardCache = forwardPassCache;
         
         this.numMemBlock = numMemBlock;
+        this.numSourceUnit = numSourceUnit;
     }
     
     public void init(){
         for (int j = 0; j < numMemBlock; j++) {
-            derivativeCache.storeCellDerivative(j, 0);
-            derivativeCache.storeInputGateDerivativeA(j, 0);
-            derivativeCache.storeForgetGateDerivativeA(j, 0);
+            for(int m = 0; m < numSourceUnit; m++){
+                derivativeCache.storeCellDerivative(j, m, 0);
+                derivativeCache.storeInputGateDerivativeA(j, m, 0);
+                derivativeCache.storeForgetGateDerivativeA(j, m, 0);
+            }
 
             int numPeephole = 3;
             for (int vprime = 0; vprime < numPeephole; vprime++) {
@@ -42,76 +46,83 @@ public class DerivativeComputation {
     }
     
     private void updateCellDerivatives(int j) {
-        double oldValue = derivativeCache.getCellDerivative(j);
+        for(int m = 0; m < numSourceUnit; m++){
+            double oldValue = derivativeCache.getCellDerivative(j, m);
 
-        //vars are in the same order as they appear in the formula
-        double a = 1; //to fetch from array?
-        double b = 1; //to fetch from array?
-        double c = 1; //to fetch from array?
-        double d = 1; //to fetch from array?
+            //vars are in the same order as they appear in the formula
+            double a = 1; //to fetch from array?
+            double b = 1; //to fetch from array?
+            double c = 1; //to fetch from array?
+            double d = 1; //to fetch from array?
 
-        double newValue = oldValue * a + dg(b) * c * d;
+            double newValue = oldValue * a + dg(b) * c * d;
 
-        derivativeCache.storeCellDerivative(j, newValue);
+            derivativeCache.storeCellDerivative(j, m, newValue);
+        }
     }
 
     private void updateInputGatesDerivatives(int j) {
-        //first step: update the general
-        double oldValue = derivativeCache.getInputGateDerivativeA(j);
-
-        //vars are in the same order as they appear in the formula
-        double a = 1; //to fetch from array?
-        double b = 1; //to fetch from array?
-        double c = 1; //to fetch from array?
-        double d = 1; //to fetch from array?
-
-        double newValue = oldValue * a + g(b) * dg(c) * d;
-
-        derivativeCache.storeInputGateDerivativeA(j, newValue);
-
-        //second step: loop over peephole and update the specifics
-        int numPeephole = 3;
-        for (int vprime = 0; vprime < numPeephole; vprime++) {
-            oldValue = derivativeCache.getInputGateDerivativeB(j, vprime);
+        //first step: for sending units
+        for(int m = 0; m < numSourceUnit; m++){
+            double oldValue = derivativeCache.getInputGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            a = 1; //to fetch from array?
-            b = 1; //to fetch from array?
-            c = 1; //to fetch from array?
-            d = 1; //to fetch from array?
+            double a = 1; //to fetch from array?
+            double b = 1; //to fetch from array?
+            double c = 1; //to fetch from array?
+            double d = 1; //to fetch from array?
 
-            newValue = oldValue * a + g(b) * dg(c) * d;
+            double newValue = oldValue * a + g(b) * df(c) * d;
+
+            derivativeCache.storeInputGateDerivativeA(j, m, newValue);
+        }
+
+        //second step: for peephole
+        int numPeephole = 3;
+        for (int vprime = 0; vprime < numPeephole; vprime++) {
+            double oldValue = derivativeCache.getInputGateDerivativeB(j, vprime);
+
+            //vars are in the same order as they appear in the formula
+            double a = 1; //to fetch from array?
+            double b = 1; //to fetch from array?
+            double c = 1; //to fetch from array?
+            double d = 1; //to fetch from array?
+
+            double newValue = oldValue * a + g(b) * df(c) * d;
 
             derivativeCache.storeInputGateDerivativeB(j, vprime, newValue);
         }
     }
 
     private void updateForgetGatesDerivatives(int j) {
-        //first step: update the general
-        double oldValue = derivativeCache.getForgetGateDerivativeA(j);
+        //first step: for sending units
+        for(int m = 0; m < numSourceUnit; m++){
+            double oldValue = derivativeCache.getForgetGateDerivativeA(j, m);
 
-        //vars are in the same order as they appear in the formula
-        double a = 1; //to fetch from array?
-        double b = 1; //to fetch from array?
-        double c = 1; //to fetch from array?
-        double d = 1; //to fetch from array?
+            //vars are in the same order as they appear in the formula
+            double a = 1; //to fetch from array?
+            double b = 1; //to fetch from array?
+            double c = 1; //to fetch from array?
+            double d = 1; //to fetch from array?
 
-        double newValue = oldValue * a + b * dg(c) * d;
+            double newValue = oldValue * a + b * df(c) * d;
 
-        derivativeCache.storeForgetGateDerivativeA(j, newValue);
+            derivativeCache.storeForgetGateDerivativeA(j, m, newValue);
+        }
+
 
         //second step: loop over peephole and update the specifics
         int numPeephole = 3;
         for (int vprime = 0; vprime < numPeephole; vprime++) {
-            oldValue = derivativeCache.getForgetGateDerivativeB(j, vprime);
+            double oldValue = derivativeCache.getForgetGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            a = 1; //to fetch from array?
-            b = 1; //to fetch from array?
-            c = 1; //to fetch from array?
-            d = 1; //to fetch from array?
+            double a = 1; //to fetch from array?
+            double b = 1; //to fetch from array?
+            double c = 1; //to fetch from array?
+            double d = 1; //to fetch from array?
 
-            newValue = oldValue * a + b * dg(c) * d;
+            double newValue = oldValue * a + b * df(c) * d;
 
             derivativeCache.storeForgetGateDerivativeB(j, vprime, newValue);
         }
