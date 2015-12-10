@@ -58,18 +58,18 @@ public class BackwardPass {
             //Step 2.a: deltas for output gates
             double sum = 0;
             for(int k = 0; k < numInput; k++){
-                double wkc = 1;//fetch from array?
+                double wkc = forwardCache.getMemoryBlockToOutputWeights(j,k);   // what is capital W?, assumed is like little w
                 sum += backwardCache.getDelta(k) * wkc;
             }
 
-            double netOutj = 1; //fetch from array?
-            double scjv = 1; //fetch from array?
+            double netOutj = forwardCache.getOutputGateInput(j) + forwardCache.getOutputGatePeephole(j, 0);
+            double scjv = forwardCache.getCellState(j, 0); //assume 1 cell state in the memory block
 
             double deltaOutj = df(netOutj) * scjv * sum;
             backwardCache.storeDeltaOut(j, deltaOutj);
 
             //Step 2.b: internal state error NB: v always 1
-            double youtj = 1; //fetch from array?
+            double youtj = forwardCache.getOutputGateOutput(j); 
             double escjv = youtj * sum;
             backwardCache.storeInternalStateError(j, escjv);
 

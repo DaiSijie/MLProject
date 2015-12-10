@@ -242,5 +242,11 @@ public class ForwardPassCache {
         }
         memoryBlocks.get(j).get(vprime)[3] = value;
     }
-    
+
+
+    /* Add functions to update the weights for the backward pass */
+    public double getMemoryBlockToOutputWeights(int from, int to)
+    {
+        return weights[numInput + from * 4][((numMemBlock + 1) * 4) + to];
+    }
 }
