@@ -5,9 +5,6 @@ import com.lstm.generator.Generator;
 import com.lstm.generator.NoiseAdder;
 import com.lstm.generator.SimpleCFLGenerator;
 import com.lstm.generator.SimpleCSLGenerator;
-import com.lstm.generator.Symbol;
-
-import static com.lstm.generator.Symbol.*;
 
 public class LSTM {
 

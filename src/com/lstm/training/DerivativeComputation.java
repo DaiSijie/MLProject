@@ -50,10 +50,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getCellDerivative(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = 1; //to fetch from array?
+            double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = 1; //to fetch from array?
-            double d = 1; //to fetch from array?
+            double c = forwardCache.getInputGateOutput(j);
+            double d = forwardCache.getYHat(m);
 
             double newValue = oldValue * a + dg(b) * c * d;
 
@@ -67,10 +67,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = 1; //to fetch from array?
+            double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = 1; //to fetch from array?
-            double d = 1; //to fetch from array?
+            double c = forwardCache.getInputGateInput(j);
+            double d = forwardCache.getYHat(m);
 
             double newValue = oldValue * a + g(b) * df(c) * d;
 
@@ -83,9 +83,9 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = 1; //to fetch from array?
+            double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = 1; //to fetch from array?
+            double c = forwardCache.getInputGateInput(j);
             double d = 1; //to fetch from array?
 
             double newValue = oldValue * a + g(b) * df(c) * d;
@@ -100,9 +100,9 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = 1; //to fetch from array?
+            double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = 1; //to fetch from array?
+            double c = forwardCache.getForgetGateInput(j); //to fetch from array?
             double d = 1; //to fetch from array?
 
             double newValue = oldValue * a + b * df(c) * d;

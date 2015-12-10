@@ -27,6 +27,9 @@ public class ForwardPass {
     }
     
     private void inputLayer(double[] input){
+        forwardCache.setExample(input);
+        
+        
         for(int i = 0; i < input.length; i++)
             forwardCache.storeInputNodeOutput(i, input[i]);
     }

@@ -12,7 +12,8 @@ public class ForwardPassCache {
     private final Double[][] weights;         // for storing the weights between units
     private final Double[] biases;            // for storing the biases for the units in the hidden and output layers
     private final Double[][] outputValues;    // for passing the values between the units/layers
-
+    private final double[] input;
+    
     private final HashMap<Integer, HashMap<Integer, Double[]>> memoryBlocks;
     
     public ForwardPassCache(int numInput, int numMemBlock, int numCellsInMemBlock, int numOutput) {
@@ -24,7 +25,8 @@ public class ForwardPassCache {
         this.biases = new Double[(numMemBlock * 4) + numOutput];
         this.weights = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
         this.outputValues = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
-
+        this.input = new double[numInput];
+        
         this.memoryBlocks = new HashMap<>();
     }
 
@@ -50,6 +52,10 @@ public class ForwardPassCache {
         output1         NO              NO          NO              NO          NO          NO          NO
         output2         NO              NO          NO              NO          NO          NO          NO
         output3         NO              NO          NO              NO          NO          NO          NO
+    
+    *
+    *   
+    *
     */
 
     /*
@@ -261,6 +267,23 @@ public class ForwardPassCache {
         {
             return outputValues[numInput + ((m - numInput) * 4)][k];
         }
+    }
+    
+    public double getYHat(int m){
+        if(m < numInput)
+            return getExample(m);
+        else
+            return getOutputGateOutput(m - input.length);
+    }
+    
+    public void setExample(double[] example){
+        for(int k = 0; k < example.length; k++){
+            this.input[k] = example[k];
+        }
+    }
+    
+    public double getExample(int k){
+        return input[k];
     }
 
 }
