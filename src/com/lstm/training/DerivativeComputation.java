@@ -102,7 +102,7 @@ public class DerivativeComputation {
             //vars are in the same order as they appear in the formula
             double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = forwardCache.getForgetGateInput(j); //to fetch from array?
+            double c = forwardCache.getForgetGateInput(j);
             double d = 1; //to fetch from array?
 
             double newValue = oldValue * a + b * df(c) * d;
@@ -117,9 +117,9 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = 1; //to fetch from array?
+            double a = forwardCache.getForgetGateOutput(j);
             double b = 1; //to fetch from array?
-            double c = 1; //to fetch from array?
+            double c = forwardCache.getForgetGateInput(j);
             double d = 1; //to fetch from array?
 
             double newValue = oldValue * a + b * df(c) * d;

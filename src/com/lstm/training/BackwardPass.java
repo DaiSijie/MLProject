@@ -161,10 +161,4 @@ public class BackwardPass {
             backwardCache.storeCell(j, m, wcjvm);            
         }
     }
-
-
-
-
-
-
 }
