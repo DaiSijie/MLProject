@@ -249,4 +249,18 @@ public class ForwardPassCache {
     {
         return weights[numInput + from * 4][((numMemBlock + 1) * 4) + to];
     }
+
+    /*Misc. get outputs*/
+    public double getSourceUnitOutputs_inputAndMemoryBlocks(int k, int m)
+    {
+        if (m < numInput)
+        {
+            return outputValues[m][k];
+        }
+        else
+        {
+            return outputValues[numInput + ((m - numInput) * 4)][k];
+        }
+    }
+
 }

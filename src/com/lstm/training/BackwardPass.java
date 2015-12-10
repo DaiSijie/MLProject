@@ -69,7 +69,7 @@ public class BackwardPass {
             backwardCache.storeDeltaOut(j, deltaOutj);
 
             //Step 2.b: internal state error NB: v always 1
-            double youtj = forwardCache.getOutputGateOutput(j); 
+            double youtj = forwardCache.getOutputGateOutput(j);
             double escjv = youtj * sum;
             backwardCache.storeInternalStateError(j, escjv);
 
