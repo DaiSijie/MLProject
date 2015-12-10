@@ -3,6 +3,9 @@ package com.lstm.training;
 import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+
+import java.util.ArrayList;
 
 import static com.lstm.network.Functions.*;
 
@@ -29,8 +32,9 @@ public class BackwardPass {
         this.alpha = alpha;
     }
 
-    public void doRound(){
-        computeDeltas();
+    // target is the next character (c + 1) of the string sequence. Where the network in the forward pass received input of character c
+    public void doRound(double[] targetExample){
+        computeDeltas(targetExample);
         updateWeightsDeltas();
     }
 
@@ -38,13 +42,13 @@ public class BackwardPass {
 
     }
 
-    private void computeDeltas(){
+    private void computeDeltas(double[] target){
         //Step 1: compute the deltas of the output units.
         for(int k = 0; k < numInput; k++){
             //compute the injection error
-            double err = forwardCache.getInputNodeOutput(k) - forwardCache.getOutputNodeOutput(k);
-            double netk = 1; //fetch from array?
-            double deltak = df(netk) * err;
+            double err = target[k] - forwardCache.getOutputNodeOutput(k);
+            double netk = forwardCache.getOutputNodeInput(k);
+            double deltak = dg(netk) * err;
 
             backwardCache.storeDelta(k, deltak);
         }
