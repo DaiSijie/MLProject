@@ -80,7 +80,7 @@ public class BackwardPass {
         //compute general output units weights 
         for(int m = 0; m < numSourceUnit; m++){
             for(int k = 0; k < numInput; k++){
-                double ym = 1; //fetch from array?
+                double ym = forwardCache.get_yhat_inputToOutputNode(m, k);
                 double deltak = backwardCache.getDelta(k);
 
                 double wkm = alpha * ym * deltak;
@@ -101,13 +101,13 @@ public class BackwardPass {
         double deltaout = backwardCache.getDeltaOut(j);
 
         for(int m = 0; m < numSourceUnit; m++){
-            double ym = 1; //fetch from array?
+            double ym = forwardCache.get_yhat_inputToOutputGate(m, j);
             double woutm = alpha * deltaout * ym;
 
             backwardCache.storeOutputGate(j, m, woutm);
         }
 
-        double scjv = 1; //fetch from array?
+        double scjv = forwardCache.getCellState(j,0); //fetch from array? - done
         double woutcjv = alpha * deltaout * scjv;
 
         backwardCache.storeOutputGateC(j, woutcjv);

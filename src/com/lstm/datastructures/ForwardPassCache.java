@@ -38,12 +38,12 @@ public class ForwardPassCache {
 
         the YES/NO shows if there is a "unit-to-unit" connection. Only the cells with YES should have a weight
 
-                        memoryBlock1    memoryBlock2    inGate          forgetGate      outGate     output1     output2     output3
-        input1          YES             ...             YES             YES             YES         YES         YES         YES
-        input2          YES             ...             YES             YES             YES         YES         YES         YES
-        input3          YES             ...             YES             YES             YES         YES         YES         YES
-        memoryBlock1    YES             ...             YES             YES             YES         YES         YES         YES
-        memoryBlock2    ...             ...             ...             ...             ...         ...         ...         ...
+                        memoryBlock1    inGate1      forgetGate1     outGate1        memoryBlock2    inGate2...      output1     output2     output3
+        input1          YES             YES          YES             YES             ...             ...             YES         YES         YES
+        input2          YES             YES          YES             YES             ...             ...             YES         YES         YES
+        input3          YES             YES          YES             YES             ...             ...             YES         YES         YES
+        memoryBlock1    YES             YES          YES             YES             ...             ...             YES         YES         YES
+        memoryBlock2    ...             ...          ...             ...             ...             ...             ...         ...         ...
 
     */
 
@@ -237,20 +237,18 @@ public class ForwardPassCache {
     /* Add functions to update the weights for the backward pass */
     public double getMemoryBlockToOutputWeights(int from, int to)
     {
-        return weights[1][numInput + from][((numMemBlock + 1) * 4) + to];
+        return weights[1][numInput + from][(numMemBlock * 4) + to];
     }
 
-    /*Misc. get outputs*/
-    public double getSourceUnitOutputs_inputAndMemoryBlocks(int k, int m)
+    /*Misc. get outputs. TODO: Eliminate need of knowledge of the weights table. */
+    public double get_yhat_inputToOutputNode(int from, int to)  //to is k
     {
-        if (m < numInput)
-        {
-            return weights[0][m][k];
-        }
-        else
-        {
-            return weights[0][numInput + ((m - numInput) * 4)][k];
-        }
+        return weights[0][from][(numMemBlock * 4) + to];
+    }
+
+    public double get_yhat_inputToOutputGate(int from, int j)
+    {
+        return weights[0][from][(j * 4) + 3];
     }
     
     public double getYHat(int m){
