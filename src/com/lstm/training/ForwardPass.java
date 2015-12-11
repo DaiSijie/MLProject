@@ -48,9 +48,9 @@ public class ForwardPass {
 
             // Store into outputValues
             forwardCache.storeMemoryBlockOutput(block_j, cellOutput);
-            forwardCache.storeInputGateOutput(block_j, inputGate);
-            forwardCache.storeForgetGateOutput(block_j, forgetGate);
-            forwardCache.storeOutputGateOutput(block_j, outputGate);
+            forwardCache.storeInputGateOutput(block_j, 0, inputGate);
+            forwardCache.storeForgetGateOutput(block_j, 0, forgetGate);
+            forwardCache.storeOutputGateOutput(block_j, 0, outputGate);
         }
     }
     

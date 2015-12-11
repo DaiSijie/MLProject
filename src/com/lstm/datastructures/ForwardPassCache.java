@@ -9,12 +9,12 @@ public class ForwardPassCache {
     private final int numCells;
     private final int numOutput;
     
-    private final Double[][] weights;         // for storing the weights between units
+    private final Double[][][] weights;       // for storing the weights between units
     private final Double[] biases;            // for storing the biases for the units in the hidden and output layers
-    private final Double[][] outputValues;    // for passing the values between the units/layers
     private final double[] input;
+    private final Double[] output;
     
-    private final HashMap<Integer, HashMap<Integer, Double[]>> memoryBlocks;
+    private final HashMap<Integer, HashMap<Integer, Double[][]>> memoryBlocks;
     
     public ForwardPassCache(int numInput, int numMemBlock, int numCellsInMemBlock, int numOutput) {
         this.numInput = numInput;
@@ -22,40 +22,29 @@ public class ForwardPassCache {
         this.numCells = numCellsInMemBlock;
         this.numOutput = numOutput;
 
+        this.weights = new Double[2][numInput + numMemBlock][(numMemBlock * 4) + numOutput];
         this.biases = new Double[(numMemBlock * 4) + numOutput];
-        this.weights = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
-        this.outputValues = new Double[numInput + (numMemBlock * 4) + numOutput][(numMemBlock * 4) + numOutput];
-        this.input = new double[numInput];
-        
         this.memoryBlocks = new HashMap<>();
+
+        this.input = new double[numInput];      //not needed
+        this.output = new Double[numOutput];
     }
 
     /*
-        Weights/OutputValues (10 x 7):
+        Weights (4 x 7): [0] is output values [1] is weight
 
-        -----> assumption in this illustration is that this network has only 1 memory block
-
-        --> left hand side is the "from"
-        ---> top is the "to"
+        --> left hand side is the "from", top is the "to"
         ----> example: [0,0] is from input1 to memoryBlock
 
         the YES/NO shows if there is a "unit-to-unit" connection. Only the cells with YES should have a weight
 
-                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
-        input1          YES             YES         YES             YES         YES         YES         YES
-        input2          YES             YES         YES             YES         YES         YES         YES
-        input3          YES             YES         YES             YES         YES         YES         YES
-        memoryBlock     YES             YES         YES             YES         YES         YES         YES
-        inGate          NO              NO          NO              NO          NO          NO          NO
-        forgetGate      NO              NO          NO              NO          NO          NO          NO
-        outGate         NO              NO          NO              NO          NO          NO          NO
-        output1         NO              NO          NO              NO          NO          NO          NO
-        output2         NO              NO          NO              NO          NO          NO          NO
-        output3         NO              NO          NO              NO          NO          NO          NO
-    
-    *
-    *   
-    *
+                        memoryBlock1    memoryBlock2    inGate          forgetGate      outGate     output1     output2     output3
+        input1          YES             ...             YES             YES             YES         YES         YES         YES
+        input2          YES             ...             YES             YES             YES         YES         YES         YES
+        input3          YES             ...             YES             YES             YES         YES         YES         YES
+        memoryBlock1    YES             ...             YES             YES             YES         YES         YES         YES
+        memoryBlock2    ...             ...             ...             ...             ...         ...         ...         ...
+
     */
 
     /*
@@ -68,20 +57,20 @@ public class ForwardPassCache {
     //weights are initialized randomly in the range [ 0.1, 0.1].
 
     /*
-        MemoryBlocks (memoryBlock_j x cells_v x 4):
+        MemoryBlocks (memoryBlock_j x cells_v x [Value or Weight][4]):
                        cellState       inGatePeephole      forgetGatePeephole      outGatePeephole
-        cell           -               -                   -                       -
+        value          -               -                   -                       -
+        weight         null            -                   -                       -
     */
-
-    // TODO Clean up code below so is condensed. Keeping this way for now for debugging purposes.
 
     // TODO Peephole initialization not implemented yet
 
+    /* Column Summation for Weighted Input */
     private double weightedInputSummation(int column){
         double cellInput = 0.0;
 
         for (int row = 0; row < weights.length; row++) {
-            cellInput += weights[row][column] * outputValues[row][column];
+            cellInput += weights[0][row][column] * weights[1][row][column];
         }
 
         cellInput += biases[column];
@@ -89,21 +78,6 @@ public class ForwardPassCache {
         return cellInput;
     }
 
-    /* Start Input Layer */
-    public double getInputNodeOutput(int input_i){
-        int index = input_i;
-        return outputValues[index][0];
-    }
-
-    public void storeInputNodeOutput(int input_i, double value){
-        int index = input_i;
-        for (int col = 0; col < outputValues[index].length; col++){
-            outputValues[index][col] = value;
-        }
-    }
-    /* End Input Layer */
-
-    /* Start Hidden Layer */
     public double getMemoryBlockInput(int block_j){
         int index = block_j * 4;
         return weightedInputSummation(index);
@@ -124,136 +98,146 @@ public class ForwardPassCache {
         return weightedInputSummation(index);
     }
 
+    public double getOutputNodeInput(int output_k){
+        int index = (numMemBlock + 1) * 4 + output_k;
+        return weightedInputSummation(index);
+    }
+    /* Column Summation for Weighted Input */
+
+    /* Start Input Layer */
+    public double getInputNodeOutput(int input_i){
+        int index = input_i;
+        return weights[0][index][0];
+    }
+
+    public void storeInputNodeOutput(int input_i, double value){
+        int index = input_i;
+        for (int col = 0; col < weights[0][index].length; col++){
+            weights[0][index][col] = value;
+        }
+    }
+    /* End Input Layer */
+
+    /* Start Hidden Layer */
     public double getMemoryBlockOutput(int block_j){
-        int index = numInput + block_j * 4;
-        return outputValues[index][index - numInput];
-    }
-
-    public double getInputGateOutput(int block_j){
-        int index = numInput + block_j * 4;
-        index += 1;
-        return outputValues[index][index - numInput];
-    }
-
-    public double getForgetGateOutput(int block_j){
-        int index = numInput + block_j * 4;
-        index += 2;
-        return outputValues[index][index - numInput];
-    }
-
-    public double getOutputGateOutput(int block_j){
-        int index = numInput + block_j * 4;
-        index += 3;
-        return outputValues[index][index - numInput];
+        int index = numInput + block_j;
+        return weights[0][index][0];
     }
 
     public void storeMemoryBlockOutput(int block_j, double value){
-        int index = numInput + block_j * 4;
+        int index = numInput + block_j;
 
-        for (int col = 0; col < outputValues[index].length; col++) {
-            outputValues[index][col] = value;
-        }
-    }
-
-    public void storeInputGateOutput(int block_j, double value){
-        int index = numInput + block_j * 4;
-        index += 1;
-        for (int col = 0; col < outputValues[index].length; col++) {
-            outputValues[index][col] = value;
-        }
-    }
-
-    public void storeForgetGateOutput(int block_j, double value) {
-        int index = numInput + block_j * 4;
-        index += 2;
-        for (int col = 0; col < outputValues[index].length; col++) {
-            outputValues[index][col] = value;
-        }
-    }
-
-    public void storeOutputGateOutput(int block_j, double value) {
-        int index = numInput + block_j * 4;
-        index += 3;
-        for (int col = 0; col < outputValues[index].length; col++) {
-            outputValues[index][col] = value;
+        for (int col = 0; col < weights[0][index].length; col++) {
+            weights[0][index][col] = value;
         }
     }
     /* End Hidden Layer */
 
     /* Start Output Layer */
-    public double getOutputNodeInput(int output_k){
-        int index = (numMemBlock + 1) * 4 + output_k;
-        return weightedInputSummation(index);
+    public double getOutputNodeOutput(int k){
+        return output[k];
     }
 
-    public double getOutputNodeOutput(int output_k){
-        int index = numInput + ((numMemBlock + 1) * 4) + output_k;
-        return outputValues[index][index - numInput];
-    }
-
-    public void storeOutputNodeOutput(int output_k, double value){
-        int index = numInput + ((numMemBlock + 1) * 4) + output_k;
-        for (int col = 0; col < outputValues[index].length; col++) {
-            outputValues[index][col] = value;
-        }
+    public void storeOutputNodeOutput(int k, double value){
+        output[k] = value;
     }
     /* End Output Layer */
 
+    /* Start Peephole and Cell State */
+    public double getInputGateOutput(int j, int vprime){
+        return memoryBlocks.get(j).get(vprime)[1][1];
+    }
+
+    public double getForgetGateOutput(int j, int vprime){
+        return memoryBlocks.get(j).get(vprime)[1][2];
+    }
+
+    public double getOutputGateOutput(int j, int vprime){
+        return memoryBlocks.get(j).get(vprime)[1][2];
+    }
+
+    public void storeInputGateOutput(int j, int vprime, double value){
+        if (!memoryBlocks.containsKey(j)){
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[1][1] = value;
+    }
+
+    public void storeForgetGateOutput(int j, int vprime, double value) {
+        if (!memoryBlocks.containsKey(j)){
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[1][2] = value;
+    }
+
+    public void storeOutputGateOutput(int j, int vprime, double value) {
+        if (!memoryBlocks.containsKey(j)){
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
+        }
+
+        memoryBlocks.get(j).get(vprime)[1][3] = value;
+    }
+
     public double getCellState(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[0];
+        return memoryBlocks.get(j).get(vprime)[0][0];
     }
 
     public double getInputGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[1];
+        return memoryBlocks.get(j).get(vprime)[0][1];
     }
 
     public double getForgetGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[2];
+        return memoryBlocks.get(j).get(vprime)[0][2];
     }
 
     public double getOutputGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[3];
+        return memoryBlocks.get(j).get(vprime)[0][3];
     }
 
     public void storeCellState(int j, int vprime, double value){
         if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
-            memoryBlocks.get(j).put(vprime, new Double[4]);
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
         }
-        memoryBlocks.get(j).get(vprime)[0] = value;
+        memoryBlocks.get(j).get(vprime)[0][0] = value;
     }
 
     public void storeInputGatePeephole(int j, int vprime, double value){
         if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
-            memoryBlocks.get(j).put(vprime, new Double[4]);
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
         }
 
-        memoryBlocks.get(j).get(vprime)[1] = value;
+        memoryBlocks.get(j).get(vprime)[0][1] = value;
     }
 
     public void storeForgetGatePeephole(int j, int vprime, double value){
         if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
-            memoryBlocks.get(j).put(vprime, new Double[4]);
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
         }
 
-        memoryBlocks.get(j).get(vprime)[2] = value;
+        memoryBlocks.get(j).get(vprime)[0][2] = value;
     }
 
     public void storeOutputGatePeephole(int j, int vprime, double value){
         if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[]>());
-            memoryBlocks.get(j).put(vprime, new Double[4]);
+            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
+            memoryBlocks.get(j).put(vprime, new Double[2][4]);
         }
-        memoryBlocks.get(j).get(vprime)[3] = value;
+        memoryBlocks.get(j).get(vprime)[0][3] = value;
     }
-
+    /* End Peephole and Cell State */
 
     /* Add functions to update the weights for the backward pass */
     public double getMemoryBlockToOutputWeights(int from, int to)
     {
-        return weights[numInput + from * 4][((numMemBlock + 1) * 4) + to];
+        return weights[1][numInput + from][((numMemBlock + 1) * 4) + to];
     }
 
     /*Misc. get outputs*/
@@ -261,11 +245,11 @@ public class ForwardPassCache {
     {
         if (m < numInput)
         {
-            return outputValues[m][k];
+            return weights[0][m][k];
         }
         else
         {
-            return outputValues[numInput + ((m - numInput) * 4)][k];
+            return weights[0][numInput + ((m - numInput) * 4)][k];
         }
     }
     
@@ -273,7 +257,7 @@ public class ForwardPassCache {
         if(m < numInput)
             return getExample(m);
         else
-            return getOutputGateOutput(m - input.length);
+            return getOutputGateOutput(m - input.length, 0);
     }
     
     public void setExample(double[] example){

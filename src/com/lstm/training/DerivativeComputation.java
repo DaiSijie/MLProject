@@ -50,9 +50,9 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getCellDerivative(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j);
+            double a = forwardCache.getForgetGateOutput(j, 0);
             double b = 1; //to fetch from array?
-            double c = forwardCache.getInputGateOutput(j);
+            double c = forwardCache.getInputGateOutput(j, 0);
             double d = forwardCache.getYHat(m);
 
             double newValue = oldValue * a + dg(b) * c * d;
@@ -67,7 +67,7 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j);
+            double a = forwardCache.getForgetGateOutput(j, 0);
             double b = 1; //to fetch from array?
             double c = forwardCache.getInputGateInput(j);
             double d = forwardCache.getYHat(m);
@@ -83,7 +83,7 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j);
+            double a = forwardCache.getForgetGateOutput(j, 0);
             double b = 1; //to fetch from array?
             double c = forwardCache.getInputGateInput(j);
             double d = 1; //to fetch from array?
@@ -100,7 +100,7 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j);
+            double a = forwardCache.getForgetGateOutput(j, 0);
             double b = 1; //to fetch from array?
             double c = forwardCache.getForgetGateInput(j);
             double d = 1; //to fetch from array?
@@ -117,7 +117,7 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j);
+            double a = forwardCache.getForgetGateOutput(j, 0);
             double b = 1; //to fetch from array?
             double c = forwardCache.getForgetGateInput(j);
             double d = 1; //to fetch from array?
