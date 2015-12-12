@@ -1,7 +1,7 @@
 %
-% File Report.tex
+% File naaclhlt2010.tex
 %
-%
+% Contact: nasmith@cs.cmu.edu
 
 \documentclass[11pt,letterpaper]{article}
 \usepackage{naaclhlt2010}
@@ -9,19 +9,19 @@
 \usepackage{latexsym}
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
-\title{CS 475 Intro to Machine Learning Project Report: Long Short Term Memory Neural Networks}
+\title{CS 475 Intro to Machine Learning: Long Short-Term Memory Project Report}
 
 \author{Charlie Wang\\
   Johns Hopkins University\\
   3400 N. Charles Street\\
   Baltimore, MD 21218, USA\\
-  {\tt email@email.com}
+  {\tt TODO: email@email.com}
   \And
   Gilbert Maystre \\
   Johns Hopkins University\\
   3400 N. Charles Street\\
   Baltimore, MD 21218, USA\\
-  {\tt email@email.com}}
+  {\tt TODO: email@email.com}}
 
 \date{}
 
@@ -37,16 +37,51 @@
 
 \section{Introduction}
 
-The following instructions are directed to authors of papers accepted
-for publication in the NAACL HLT 2010 proceedings.  All authors are required
-to adhere to these specifications. Authors are required to provide
-a Portable Document Format (PDF) version of
-their papers.  The proceedings will be printed on US-Letter paper.
-Authors from countries in which access to word-processing systems is
-limited should contact the publication chairs as soon as possible.
+Long Short-Term Memory (LSTM) is an artificial neural network architecture, which is in turn considered as a machine learning model. First proposed by ~\cite{Hochreiter:97}, LSTMs are a subclass of recurrent neural networks, a subclass of artificial neural networks. LSTMs build upon the decades of artificial neural network research to solve new types of problems.
+
+The artificial neural network architecture is based on the idea of biological neurons in the brain and how neurons are organized. It was discovered that neurons receive multiple inputs from other neurons, does something simple with the inputs, and outputs a signal which can be relayed to many other neurons. In the same idea, the nodes in artificial neural networks replicate the biological neurons. Artificial neural network nodes receive multiple inputs from other nodes, which are weighted. A summation is performed on the inputs, and this sum is then passed through an activation function. Many times, the activation function is a simple logistic sigmoid function. Then, the node would output the value to other nodes through weighted connections. Although each neuron is seemingly simple of-by-themselves, together, they can solve many complex problems, including the estimation of a regression surface by ~\cite{Specht:91}. The artificial neural networks were generally organized with an input layer, which consisted of many input nodes with an identity activation function. The nodes in the input layer would be connected to the nodes in the hidden layer, where the nodes in the hidden layer would in turn be connected to the nodes in the output layer. This high-level overview is the general architecture of artificial neural networks.
+
+Much work was done on artificial neural networks, such as adding many hidden layers to form deep learning neural networks. Another work that arose in the artificial neural network world was with recurrent neural networks. Recurrent neural networks are similar to a traditional artificial neural network architecture of input layer, hidden layer, and output layer. However, the main difference is that the weights coming out of a node does not just go to other nodes in other layers -- the weights can loop back to the node itself or other nodes in that respective layer. This new idea became the recurrent neural network.
+
+Recurrent neural networks were able to extend upon artificial neural networks, but more was wanted from what recurrent neural networks were able to perform and achieve. This led to the birth of architecture of Long Short-Term Memory (LSTM), which is built on recurrent neural networks, which is in turn built on artificial neural networks in general. Based on the work of ~\cite{Hochreiter:97}, greater complexity was added to the nodes in the hidden layer of the neural network. To start, the idea of a hidden layer node was extended into the idea of a memory block. For each memory block, it consists of the node itself, which is renamed as a cell, and the novel idea of gates. Each memory block had two gates, an input gate and an output gate. The gates were considered multiplicative, and the output of the gates are multiplied with the respective weighted values coming from and to the cell in the memory block. To clarify, the output of the input gate is multiplied with the summed input weights to the memory block. The output of the output gate is multiplied with the output value of the memory block. The goal of the gates is to control the constant error flow through discrete time steps due to the effect of the loops in the LSTM. Thus, the need for an activation function for the cell was discarded, and instead, an edge that flows back into the input of the cell was added. The value of the cell was named cell state.
+
+Recall that the LSTM proposed by ~\cite{Hochreiter:97} is built on the idea of recurrent neural network. Thus, the general overview of the connections between nodes can be illustrated in this way: each input node output is connected/flows to each of the memory block, each gate, and each output node. The output of the memory blocks is connected to the memory block itself (the recurrent part), the output nodes, and the gates.
+
+More research was conducted on the LSTM architecture, and ~\cite{Gers:99} discovered that there was a flaw with the cell. In fact, due to the loop from the output of the cell to the input of the cell on each time step, ~\cite{Gers:99} discovered that the loop could cause the cell state to grow indefinitely, thus causing the whole network to be skewed so much that the output of the network is of not much use. In other words, the whole network becomes broken after too many time steps. Thus, ~\cite{Gers:99} added onto the complexity of the original LSTM architecture by adding an additional gate, which they named the forget gate. The forget gate is similar to the input and output gates, but instead of targeting the input to the cell like the input gate or the output of the cell like the output gate, the forget gate targeted that recurrent loop of the cell. Similarly, as with the input gate and the output gate, they received weighted inputs from the input nodes and the memory block itself. Thus, the number of weights in the network grew and the complexity of the memory block grew, but ~\cite{Gers:99} were able to show that this improved the network results in the long term.
+
+However, there was still a flaw present in the LSTM architecture. The LSTM architecture after the work of ~\cite{Gers:99} was ill-suited for tasks where accurate measurement of time intervals was needed. For example, the distinction is needed in some tasks to know when spikes or other abnormalities occur either 100 times steps apart, or 101 time steps apart. Thus, ~\cite{Gers:02} proposed the idea of adding peephole weighted connection from the cell to the input, forget, and output gates. Without the peephole connections, the gates would only be able to see what the output of the cell is after being multiplied by the output of the output gate. If the output gate is closed, in other words close to 0, the gates would not be receiving an accurate picture of what the cell state is giving as an output. Thus, with the peephole connection which serve as a direction connection for gates to see what the cell state is currently like, network performance was shown to increase by ~\cite{Gers:02}.
+
+These advancements, including many other following advancements, have made the LSTM architecture applicable to many problems out in the world today. For example, Google was able to achieve breakthrough in generating image captions with the help of the LSTM architecture combined with a deep convolutional net, which is described in ~\cite{Vinyals:14}. In fact, in this specific example, natural language captions were able to be generated on images by recognizing objects in the picture, such as what was the main subject and what the background is like.
+
+The capabilities, complexities, and potential of LSTM is why the project was chosen to be done on the LSTM architecture and on the application of a LSTM network. For the project, an application of LSTM was chosen that incorporates some of the important advancements with the architecture, such as by ~\cite{Gers:99} and by ~\cite{Gers:02}. Thus, the project is conducted on the works of ~\cite{Gers:01}, which is on the topic of learning simple context-sensitive languages (CSL).
+
+\section{Problem}
+Problem: talk about what the problem is and how it is set up. What language (CSL) is generated ($a^n b^n$). How the network is suppose to work. How prediction works. How the network knows is right or wrong. Say that using supervised learning. Ultimate goal is to classify what. Why need to use LSTM, cannot use recurrent neural networks.
+
+\section{Network Architecture}
+Network Architecture: How is the architecture set up. How many input nodes, hidden nodes, output nodes. How many layers. How nodes are connected. What about the weights? What is expected input and expected output from the network.
+
+\section{Algorithm}
+Algorithm: Talk about the algorithms that are used. Analyze the algorithm: how does it work, why it works, etc. Is gradient learning, etc.
+
+\section{Coding the Solution}
+Coding: how approached the problem. How prepare data? first generate language. Then get understanding of paper and how network is set up, which is highlighted in the section before under architecture. !!!Problems encountered.!!! Then coding the forward pass, derivatives, and the backward pass. How there is little information on the backward pass. Needed to go and find it. Talk about how much time spent on the project and how much work was done/
+
+Also, analyze the algorithm using machine learning concepts/understandings.
+
+\section{Results}
+Results: analyze the results. Explain why get results.
+
+\section{Comparison to Proposal}
+Comparison to Proposal:
+What was different. If different, give good explanation.
+
+\section{Conclusion}
 
 
-\section{General Instructions}
+
+
+\section{Template: General Instructions}
 
 Manuscripts must be in two-column format.  Exceptions to the
 two-column format include the title, authors' names and complete
@@ -295,35 +330,47 @@ Do not number the acknowledgment section.
 
 \begin{thebibliography}{}
 
-\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
-Alfred~V. Aho and Jeffrey~D. Ullman.
-\newblock 1972.
-\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
-\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
+\bibitem[\protect\citename{Specht}1991]{Specht:91}
+Donald F. Specht.
+\newblock 1991.
+\newblock A General Regression Neural Network.
+\newblock {\em Neural Networks},
+2(6):568--576.
 
-\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
-{American Psychological Association}.
-\newblock 1983.
-\newblock {\em Publications Manual}.
-\newblock American Psychological Association, Washington, DC.
+\bibitem[\protect\citename{Gers \bgroup et al.\egroup }1999]{Gers:99}
+Felix A. Gers,  Jurgen Schmidhuber, and Fred Cummins.
+\newblock 1999.
+\newblock Learning to Forget: Continual Prediction With LSTM.
+\newblock {\em Artificial Neural Networks},
+2(470):850--855.
 
-\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
-{Association for Computing Machinery}.
-\newblock 1983.
-\newblock {\em Computing Reviews}, 24(11):503--512.
+\bibitem[\protect\citename{Gers and Schmidhuber}2001]{Gers:01}
+Felix A. Gers and Jurgen Schmidhuber.
+\newblock 2001.
+\newblock LSTM Recurrent Networks Learn Simple Context-Free and Context-Sensitive Languages.
+\newblock {\em IEEE Transactions on Neural Networks},
+12(6):1333-1340.
 
-\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
-Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
-\newblock 1981.
-\newblock Alternation.
-\newblock {\em Journal of the Association for Computing Machinery},
-  28(1):114--133.
+\bibitem[\protect\citename{Gers \bgroup et al.\egroup }2002]{Gers:02}
+Felix A. Gers, Nicol N. Schraudolph, and Jurgen Schmidhuber.
+\newblock 2002.
+\newblock Learning Precise Timing with LSTM Recurrent Networks.
+\newblock {\em Journal of Machine Learning Research},
+3:115--143.
 
-\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
-Dan Gusfield.
+\bibitem[\protect\citename{Vinyals \bgroup et al.\egroup }2014]{Vinyals:14}
+Oriol Vinyals, Alexander Toshev, Samy Bengio, and Dumitru Erhan.
+\newblock 2014.
+\newblock Show and Tell: A Neural Image Caption Generator.
+\newblock {\em CoRR},
+abs/1411.4555.
+
+\bibitem[\protect\citename{Hochreiter and Schmidhuber}1997]{Hochreiter:97}
+Sepp Hochreiter and Jurgen Schmidhuber.
 \newblock 1997.
-\newblock {\em Algorithms on Strings, Trees and Sequences}.
-\newblock Cambridge University Press, Cambridge, UK.
+\newblock Long Short-Term Memory.
+\newblock {\em Neural Computation},
+9(8):1735--1780.
 
 \end{thebibliography}
 
