@@ -3,7 +3,6 @@ package com.lstm.training;
 import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 
 import java.util.ArrayList;
 

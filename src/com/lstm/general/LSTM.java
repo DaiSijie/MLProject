@@ -1,10 +1,13 @@
 package com.lstm.general;
 
+import com.lstm.datastructures.ForwardPassCache2;
 import com.lstm.generator.ComplicatedCFLGenerator;
 import com.lstm.generator.Generator;
 import com.lstm.generator.NoiseAdder;
 import com.lstm.generator.SimpleCFLGenerator;
 import com.lstm.generator.SimpleCSLGenerator;
+import com.lstm.network.NetworkDescription;
+import com.lstm.training.ForwardPass2;
 
 public class LSTM {
 
@@ -22,21 +25,59 @@ public class LSTM {
          * Test the trained network on a larger dataset. Output results
          */
         
-        System.out.println("Examples: \n");
+        int numInput = 3;
+        int numMem = 1;
         
-        System.out.println("Simple CFL a^n b^n with limit n = 3");
-        Generator g1 = new SimpleCFLGenerator(3);
-        while(g1.hasNext()){
-            System.out.print(g1.getNext());
+
+        
+        NetworkDescription n = new NetworkDescription(numInput, numMem);
+        ForwardPassCache2 fwd = new ForwardPassCache2(n);
+        
+        ForwardPass2 f = new ForwardPass2(n, fwd);
+        
+        double[] example = {0, 0, 1};
+        
+        f.init();
+        f.doRound(example);
+        
+        for(int i = 0; i < n.numOutput; i++){
+            System.out.println(fwd.getYBaked(i));
         }
         
-        System.out.println("\n");
         
-        System.out.println("Simple CSL a^n b^n c^n with limit n = 3");
-        Generator g2 = new SimpleCSLGenerator(3);
-        while(g2.hasNext()){
-            System.out.print(g2.getNext());
+        double[] example2 = {1, 0, 0};
+        f.doRound(example2);
+        for(int i = 0; i < n.numOutput; i++){
+            System.out.println(fwd.getYBaked(i));
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+//        System.out.println("Examples: \n");
+//        
+//        System.out.println("Simple CFL a^n b^n with limit n = 3");
+//        Generator g1 = new SimpleCFLGenerator(3);
+//        while(g1.hasNext()){
+//            System.out.print(g1.getNext());
+//        }
+//        
+//        System.out.println("\n");
+//        
+//        System.out.println("Simple CSL a^n b^n c^n with limit n = 3");
+//        Generator g2 = new SimpleCSLGenerator(3);
+//        while(g2.hasNext()){
+//            System.out.print(g2.getNext());
+//        }
         
         
         
