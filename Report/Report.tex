@@ -143,6 +143,32 @@ Only the first goal was achieved. The complexity of the network and the need of 
 \section{Conclusion}
 Although the project did not truly follow every goal of the proposal, we felt that we have learned a lot more than we had anticipated. A lot of research has been spent in the area of artificial neural networks, and the power and capabilities of the LSTM naturally leads to complexity in the architecture. Nonetheless, we were able to code the fundamental pieces of the LSTM network, step-by-step, and truly gain an understanding of how each piece fit into the network. We recognize that it would have been possible to take a library and use that to complete the goals of the proposal without spending more than the time specified in the project guidelines to understand and code the LSTM from scratch, but that would have taken away all the struggles, personal achievements, and learning. Ultimately, this paper and the code that accompanies it is representative of the understanding and work that we have dedicated to the project.
 
+\section{Appendix}
+The following little java programs can classify correctly the $a^nb^n$ language, provided that $n$ is in the 32 bits integer range. The aim here is to demonstrate that learning this language with a complicated LSTM has no real application.
+
+\begin{verbatim}
+public boolean classify(String s){
+  int stack = 0;
+  boolean seenB;
+  for(char c : s.toCharArray()){
+      if(seenB){
+	    if(c == 'a')
+          return false;
+        else 
+          stack --;		
+      }
+      else{
+        if(c == 'a')
+          stack ++;
+        else{
+          seenB = true;
+          stack --;
+        }
+      }
+    }
+    return stack == 0;
+}
+\end{verbatim}
 
 
 \begin{thebibliography}{}
