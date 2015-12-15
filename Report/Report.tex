@@ -21,7 +21,7 @@
   Johns Hopkins University\\
   3400 N. Charles Street\\
   Baltimore, MD 21218, USA\\
-  {\tt \colorbox{red}{TODO:} fillin...@jhu.edu}}
+  {\tt gmaystr1@jhu.edu}}
 
 \date{}
 
@@ -122,10 +122,9 @@ The information explained in Section 3 and Section 4 were coded after much time 
 Another part that was coded, which was not explained in much detail before, was generating the example languages in ~\cite{Gers:01}.
 
 \subsection{Generating examples}
-The examples are generated via the \verb!Generator! class and it's subclasses. The network is presented one symbol of the language at each iteration. Those symbol are part of the  Each example is prefixed by the starting symbol \verb!s! and suffixed by the termination symbol \verb!t!. 
- 
+The examples are generated via the \verb!Generator! class and it's subclasses. One example consists of one symbol (represented as k-class vector). The network is presented all the token of all string one at a time, in the right order. Concretely, the \verb!LSTM! class first specify the network topology and an example generator and then gives both to the \verb!Network!. In turn, this class can access examples by calling \verb!Generator.getNextAsVector()!.\\
 
-\colorbox{red}{TODO}
+Actual formulas can be found in the code. It is nothing fancy but the code is easy and self-explanative.
 
 \section{Results}
 \colorbox{red}{TODO}
