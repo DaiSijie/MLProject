@@ -41,11 +41,11 @@ public class ForwardPassCache2 {
     private final HashMap<Integer, Double> yF;
     private final HashMap<Integer, Double> yOut;
     private final HashMap<Integer, Double> yIn;
-    private final HashMap<Integer, Double> yCell;
+    private final HashMap<Boolean, HashMap<Integer, Double>> yCell;
     private final HashMap<Integer, Double> yBaked;
     
     //CELLS
-    private final HashMap<Integer, Double> cellState;
+    private final HashMap<Boolean, HashMap<Integer, Double>> cellState;
          
     //INPUT
     private double[] input;
@@ -297,12 +297,15 @@ public class ForwardPassCache2 {
         yIn.put(j, value);
     }
     
-    public double getYCell(int j){
-        return yCell.get(j);
+    public double getYCell(boolean hat, int j){
+        return yCell.get(hat).get(j);
     }
     
-    public void storeYCell(int j, double value){
-        yCell.put(j, value);
+    public void storeYCell(boolean hat, int j, double value){
+        if(!yCell.containsKey(hat))
+            yCell.put(hat, new HashMap<>());
+        
+        yCell.get(hat).put(j, value);
     }
     
     public double getYBaked(int k){
@@ -313,12 +316,12 @@ public class ForwardPassCache2 {
         yBaked.put(k, value);
     }
     
-    public double smartGetYHatM(int m){
+    public double smartGetYM(boolean hat, int m){
         if(0 <= m && m < numInput){
             return input[m];
         }
         else if(m <= numInput && m < numSource){
-            return getYCell(m - numInput);
+            return getYCell(hat, m - numInput);
         }
         else{
             throw new IllegalArgumentException("Invalid m passed to smart y hat");
@@ -334,16 +337,19 @@ public class ForwardPassCache2 {
      * BEGIN CELLS
      */
     
-    public double getCellState(int j){
-        return cellState.get(j);
+    public double getCellState(boolean hat, int j){
+        return cellState.get(hat).get(j);
     }
     
-    public void storeCellState(int j, double value){
-        cellState.put(j, value);
+    public void storeCellState(boolean hat, int j, double value){
+        if(!cellState.containsKey(hat))
+            cellState.put(hat, new HashMap<>());
+        
+        cellState.get(hat).put(j, value);
     }
 
-    public double getCellPeephole(int j, int vprime){
-        return getCellState(j);
+    public double getCellPeephole(boolean hat, int j, int vprime){
+        return getCellState(hat, j);
     }
     
     /*
