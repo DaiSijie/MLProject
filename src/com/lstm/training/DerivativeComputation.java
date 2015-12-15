@@ -15,9 +15,9 @@ public class DerivativeComputation {
     private final int numMemBlock;
     private final int numSourceUnit;
     
-    public DerivativeComputation(NetworkDescription description, DerivativeCache derivativeCache, ForwardPassCache2 forwardPassCache){
-        this.derivativeCache = derivativeCache;
-        this.forwardCache = forwardPassCache;
+    public DerivativeComputation(NetworkDescription description, DerivativeCache dcache, ForwardPassCache2 fcache){
+        this.derivativeCache = dcache;
+        this.forwardCache = fcache;
         
         this.numMemBlock = description.numMemBlock;
         this.numSourceUnit = description.numSource;
@@ -26,7 +26,7 @@ public class DerivativeComputation {
     public void init(){
         for (int j = 0; j < numMemBlock; j++) {
             for(int m = 0; m < numSourceUnit; m++){
-                derivativeCache.storeCellDerivative(j, m, 0);
+                derivativeCache.storeCellDerivative(j, m, 0.);
                 derivativeCache.storeInputGateDerivativeA(j, m, 0);
                 derivativeCache.storeForgetGateDerivativeA(j, m, 0);
             }

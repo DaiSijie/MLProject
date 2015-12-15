@@ -29,7 +29,6 @@ public class LSTM {
         int numMem = 1;
         
 
-        
         NetworkDescription n = new NetworkDescription(numInput, numMem);
         ForwardPassCache2 fwd = new ForwardPassCache2(n);
         

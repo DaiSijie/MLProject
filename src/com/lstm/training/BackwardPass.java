@@ -3,6 +3,8 @@ package com.lstm.training;
 import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
+import com.lstm.datastructures.ForwardPassCache2;
+import com.lstm.network.NetworkDescription;
 
 import java.util.ArrayList;
 
@@ -19,8 +21,7 @@ public class BackwardPass {
     private final int numSourceUnit;
     private final double alpha;
 
-    public BackwardPass(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, BackwardPassCache backwardPassCache,
-            int numInput, int numMemBlock, double alpha, int numSourceUnit){
+    public BackwardPass(NetworkDescription description, DerivativeCache derivativeCache, ForwardPassCache2 forwardPassCache, BackwardPassCache backwardPassCache){
         this.derivativeCache = derivativeCache;
         this.forwardCache = forwardPassCache;
         this.backwardCache = backwardPassCache;

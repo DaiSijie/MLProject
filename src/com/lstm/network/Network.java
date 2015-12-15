@@ -1,40 +1,38 @@
 package com.lstm.network;
 
 import com.lstm.datastructures.ForwardPassCache;
+import com.lstm.datastructures.ForwardPassCache2;
 import com.lstm.generator.Generator;
 import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.training.BackwardPass;
 import com.lstm.training.DerivativeComputation;
 import com.lstm.training.ForwardPass;
+import com.lstm.training.ForwardPass2;
 
 public class Network {
     
-    private final int numInput;
-  
-    private final DerivativeCache derivativeCache;
-    private final ForwardPassCache forwardCache;
-    private final BackwardPassCache backwardCache;
-
-    private final ForwardPass forwardPass;
+    private final ForwardPass2 forwardPass;
     private final DerivativeComputation derivativeComputation;
     private final BackwardPass backwardPass;
     
-    public Network(int numInput, int numMemBlock, double learningRate, Generator gen) {    
-        this.numInput = numInput;
+    private final int numOutput;
+    
+    public Network(NetworkDescription description, Generator gen) {
+        //we build everything for the forward pass
+        ForwardPassCache2 fwdcache = new ForwardPassCache2(description);
+        this.forwardPass = new ForwardPass2(description, fwdcache);
         
-        this.derivativeCache = new DerivativeCache();        
-        //the number of cells is always 1, and the number of input is equal to the number of input
-        this.forwardCache = new ForwardPassCache(numInput, numMemBlock, 1, numInput);
-        this.backwardCache = new BackwardPassCache();
+        //we build everything for the derivative computation
+        DerivativeCache dcache = new DerivativeCache();
+        this.derivativeComputation = new DerivativeComputation(description, dcache, fwdcache);
         
-        int numberOfSourceUnit = numInput + numMemBlock;
-        int numberOfReceveirUnit = numInput + numMemBlock * 4;
-
-        this.forwardPass = new ForwardPass(forwardCache, numMemBlock, numInput);
-        this.derivativeComputation = new DerivativeComputation(derivativeCache, forwardCache, numMemBlock, numberOfSourceUnit);
-        this.backwardPass = new BackwardPass(derivativeCache, forwardCache, backwardCache, numInput, numMemBlock, learningRate, numberOfSourceUnit);
-
+        //we build everything for the backward pass
+        BackwardPassCache bcache = new BackwardPassCache();
+        this.backwardPass = new BackwardPass(description, dcache, fwdcache, bcache);
+        
+        this.numOutput = description.numOutput;
+        
         //init everything
         forwardPass.init();
         derivativeComputation.init();
@@ -66,8 +64,8 @@ public class Network {
             double[] input = null;
             
             forwardPass.doRound(input);
-            for(int k = 0; k < numInput; k++){
-                if(input[k] != forwardCache.getOutputNodeOutput(k))
+            for(int k = 0; k < numOutput; k++){
+//                if(input[k] != forwardCache.getOutputNodeOutput(k))
                     return false;
             }
             
