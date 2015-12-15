@@ -88,8 +88,8 @@ public class ForwardPass2 {
         
         //the bias
         sum += cache.getBiasIn(j);
-        
-        //now no need to sum, there is always only one cell
+                
+        //the infamous peephole
         sum += cache.getWeightInToCell(j) * cache.getCellState(j);
         
         cache.storeNetIn(j, sum);
@@ -105,7 +105,7 @@ public class ForwardPass2 {
         //the bias
         sum += cache.getBiasF(j);
         
-        //now no need to sum, there is always only one cell
+        //the infamous peephole
         sum += cache.getWeightFToCell(j) * cache.getCellState(j);
         
         cache.storeNetF(j, sum);
@@ -137,6 +137,7 @@ public class ForwardPass2 {
         //bias
         sum += cache.getBiasOut(j);
         
+        //the infamous peephole
         sum += cache.getWeightOutToCell(j) * cache.getCellState(j);
         
         cache.storeNetOut(j, sum);

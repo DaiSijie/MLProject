@@ -46,10 +46,10 @@ public class ForwardPassCache2 {
     
     //CELLS
     private final HashMap<Integer, Double> cellState;
-    
+         
     //INPUT
     private double[] input;
-
+    
     public ForwardPassCache2(NetworkDescription description){
         this.numInput = description.numInput;
         this.numSource = description.numSource;
@@ -349,8 +349,7 @@ public class ForwardPassCache2 {
     /*
      * END CELLS
      */
-    
-    
+
     /*
      * BEGIN INPUT
      */

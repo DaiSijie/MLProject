@@ -2,23 +2,25 @@ package com.lstm.training;
 
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
+import com.lstm.datastructures.ForwardPassCache2;
+import com.lstm.network.NetworkDescription;
 
 import static com.lstm.network.Functions.*;
 
 public class DerivativeComputation {
 
     private final DerivativeCache derivativeCache;
-    private final ForwardPassCache forwardCache;
+    private final ForwardPassCache2 forwardCache;
     
     private final int numMemBlock;
     private final int numSourceUnit;
     
-    public DerivativeComputation(DerivativeCache derivativeCache, ForwardPassCache forwardPassCache, int numMemBlock, int numSourceUnit){
+    public DerivativeComputation(NetworkDescription description, DerivativeCache derivativeCache, ForwardPassCache2 forwardPassCache){
         this.derivativeCache = derivativeCache;
         this.forwardCache = forwardPassCache;
         
-        this.numMemBlock = numMemBlock;
-        this.numSourceUnit = numSourceUnit;
+        this.numMemBlock = description.numMemBlock;
+        this.numSourceUnit = description.numSource;
     }
     
     public void init(){
@@ -50,10 +52,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getCellDerivative(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j, 0);
-            double b = 1; //to fetch from array?
-            double c = forwardCache.getInputGateOutput(j, 0);
-            double d = forwardCache.getYHat(m);
+            double a = forwardCache.getYF(j);
+            double b = forwardCache.getNetCell(j);
+            double c = forwardCache.getYIn(j);
+            double d = forwardCache.smartGetYHatM(m);
 
             double newValue = oldValue * a + dg(b) * c * d;
 
@@ -67,10 +69,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j, 0);
-            double b = 1; //to fetch from array?
-            double c = forwardCache.getInputGateInput(j);
-            double d = forwardCache.getYHat(m);
+            double a = forwardCache.getYF(j);
+            double b = forwardCache.getNetCell(j);
+            double c = forwardCache.getNetIn(j);
+            double d = forwardCache.smartGetYHatM(m);
 
             double newValue = oldValue * a + g(b) * df(c) * d;
 
