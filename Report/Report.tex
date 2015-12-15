@@ -56,7 +56,18 @@ These advancements, including many other following advancements, have made the L
 The capabilities, complexities, and potential of LSTM is why the project was chosen to be done on the LSTM architecture and on the application of a LSTM network. For the project, an application of LSTM was chosen that incorporates some of the important advancements with the architecture, such as by ~\cite{Gers:99} and by ~\cite{Gers:02}. Thus, the project is conducted on the works of ~\cite{Gers:01}, which is on the topic of learning simple context-sensitive languages (CSL).  
 
 \section{Problem}
-The research project is based on replicating the solution obtained by ~\cite{Gers:01} to the problem that their research is looking to solve. Based on ~\cite{Gers:01}, the problem that the paper looks to solve is building a network that is able to accurate classify a context-free language (CFL) and a context-sensitive language (CSL). Recall that CSL includes all CFL, and CFL includes all regular language (RL). According to ~\cite{Gers:01}, it has been shown that LSTM is able to outperform recurrent neural networks when working with RL, but they are unsure if this performance gap exists also when working with CFL and CSL though they know that recognizing CFLs require a stack which the LSTM would need to be able to replicate.
+\textcolor{red}{\textit{This section assumes minimal background in theory of computation. For readers not familiar with it, the basic reference is REF: Introduction to the theory of computation (Michael Sipser)}}\\
+
+\textcolor{red}{Our research project is based on understanding and replicating the experiment that was done in ~\cite{Gers:01}.  In this paper, they are basically demonstrating that the LSTM with peephole connection that they introduced in a former paper works really well at leaning and correlating events that are \textit{far apart} in time. To do so, they choosed to learn a class of language which naturally needs a long term memory: the Context-Free Languages (CFLs) and a special case of the Context-Sensitive Language (CSLs). Unlike Regular Languages (RLs), CFLs and CSLs needs more than just a finite state automata to be recognized. CFLs needs a stack structure and the special CSL needs something close to it. ~\cite{Gers:01} state in the introduction of their paper that it has been show that LSTM are able to outperform recurrent neural networks when working on RLs but that they are unsure if this performance gap exists also when working with CFLs or CSLs. The three language that they choosed are: }
+
+\begin{enumerate}
+\color{red}
+\item $a^nb^n$ (CFL)
+\item $a^nA^mB^mb^n$ (CFL)
+\item $a^nb^nc^n$ (CSL)
+\end{enumerate}  
+
+\textcolor{red}{At this point, it is useful to emphasize the fact that learning those language is not really useful (See appendix for a small algorithm that recognize the first language). But rather demonstrates the theoretical ability of their model to learn events that are located far appart in time (correlating the last $a$ from the last $b$ in the case of $a^nb^n$).}\\
 
 ~\cite{Gers:01} set up the problem for the LSTM architecture in this way: a string belonging to the language will be presented to the LSTM. The string is formatted in such a way that it has a unique start symbol $S$ and end of string symbol $T$. For example, for the CFL language $a^nb^n$, a string example that can be presented to the LSTM is $SaaabbbT$ for $n = 3$. Furthermore, the string will be presented to the LSTM in such a way that only 1 character of the string is presented at a time until all characters (the whole string) is presented. 
 
@@ -109,6 +120,9 @@ On a side note, notice how that though the bias was mentioned in the network arc
 The information explained in Section 3 and Section 4 were coded after much time was spent on understanding just what to code. Likewise, due to the ever changing understanding of the network, there were many changes that were made as classes were created/deleted and data structures changed. Nonetheless, Section 3 and Section 4 is our most updated understanding and what our code is based on. Also, these two sections together represent the main LSTM network. 
 
 Another part that was coded, which was not explained in much detail before, was generating the example languages in ~\cite{Gers:01}.
+
+\subsection{Generating examples}
+The examples are generated via the \verb!Generator! class and it's subclasses. The network is presented one symbol of the language at each iteration. Those symbol are part of the  Each example is prefixed by the starting symbol \verb!s! and suffixed by the termination symbol \verb!t!. 
  
 
 \colorbox{red}{TODO}
