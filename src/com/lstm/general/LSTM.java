@@ -1,13 +1,13 @@
 package com.lstm.general;
 
-import com.lstm.datastructures.ForwardPassCache2;
+import com.lstm.datastructures.ForwardPassCache;
 import com.lstm.generator.ComplicatedCFLGenerator;
 import com.lstm.generator.Generator;
 import com.lstm.generator.NoiseAdder;
 import com.lstm.generator.SimpleCFLGenerator;
 import com.lstm.generator.SimpleCSLGenerator;
 import com.lstm.network.NetworkDescription;
-import com.lstm.training.ForwardPass2;
+import com.lstm.training.ForwardPass;
 
 public class LSTM {
 
@@ -27,12 +27,13 @@ public class LSTM {
         
         int numInput = 3;
         int numMem = 1;
-        
+        double learningrate = 10e-5;
+        double momentum = 0.99;
 
-        NetworkDescription n = new NetworkDescription(numInput, numMem);
-        ForwardPassCache2 fwd = new ForwardPassCache2(n);
+        NetworkDescription n = new NetworkDescription(numInput, numMem, learningrate, momentum);
+        ForwardPassCache fwd = new ForwardPassCache(n);
         
-        ForwardPass2 f = new ForwardPass2(n, fwd);
+        ForwardPass f = new ForwardPass(n, fwd);
         
         double[] example = {0, 0, 1};
         

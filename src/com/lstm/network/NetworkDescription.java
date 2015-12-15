@@ -19,7 +19,10 @@ public class NetworkDescription {
     public final int numPeephole;
     public final int numCellsPerBlock;
     
-    public NetworkDescription(int numInput, int numMemBlock){        
+    public final double learningRate;
+    public final double momentum;
+    
+    public NetworkDescription(int numInput, int numMemBlock, double learningRate, double momentum){        
         this.numInput = numInput;
         this.numOutput = numInput;
         this.numMemBlock = numMemBlock;
@@ -32,6 +35,8 @@ public class NetworkDescription {
         this.numPeephole = 3;
         this.numCellsPerBlock = 1;
         
+        this.learningRate = learningRate; 
+        this.momentum = momentum;
     }
 
 }

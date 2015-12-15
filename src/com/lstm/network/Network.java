@@ -1,18 +1,16 @@
 package com.lstm.network;
 
 import com.lstm.datastructures.ForwardPassCache;
-import com.lstm.datastructures.ForwardPassCache2;
 import com.lstm.generator.Generator;
 import com.lstm.datastructures.BackwardPassCache;
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.training.BackwardPass;
 import com.lstm.training.DerivativeComputation;
 import com.lstm.training.ForwardPass;
-import com.lstm.training.ForwardPass2;
 
 public class Network {
     
-    private final ForwardPass2 forwardPass;
+    private final ForwardPass forwardPass;
     private final DerivativeComputation derivativeComputation;
     private final BackwardPass backwardPass;
     
@@ -20,8 +18,8 @@ public class Network {
     
     public Network(NetworkDescription description, Generator gen) {
         //we build everything for the forward pass
-        ForwardPassCache2 fwdcache = new ForwardPassCache2(description);
-        this.forwardPass = new ForwardPass2(description, fwdcache);
+        ForwardPassCache fwdcache = new ForwardPassCache(description);
+        this.forwardPass = new ForwardPass(description, fwdcache);
         
         //we build everything for the derivative computation
         DerivativeCache dcache = new DerivativeCache();

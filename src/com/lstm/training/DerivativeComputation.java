@@ -2,7 +2,6 @@ package com.lstm.training;
 
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
-import com.lstm.datastructures.ForwardPassCache2;
 import com.lstm.network.NetworkDescription;
 
 import static com.lstm.network.Functions.*;
@@ -10,12 +9,12 @@ import static com.lstm.network.Functions.*;
 public class DerivativeComputation {
 
     private final DerivativeCache derivativeCache;
-    private final ForwardPassCache2 forwardCache;
+    private final ForwardPassCache forwardCache;
     
     private final int numMemBlock;
     private final int numSourceUnit;
     
-    public DerivativeComputation(NetworkDescription description, DerivativeCache dcache, ForwardPassCache2 fcache){
+    public DerivativeComputation(NetworkDescription description, DerivativeCache dcache, ForwardPassCache fcache){
         this.derivativeCache = dcache;
         this.forwardCache = fcache;
         
