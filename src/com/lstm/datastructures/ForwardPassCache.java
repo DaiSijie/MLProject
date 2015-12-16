@@ -106,7 +106,7 @@ public class ForwardPassCache {
     
     public void storeWeightF(int j, int m, double value){
         if(!weightF.containsKey(j))
-            weightF.put(j, new HashMap<>());
+            weightF.put(j, new HashMap<Integer, Double>());
         
         weightF.get(j).put(m, value);
     }
@@ -134,7 +134,7 @@ public class ForwardPassCache {
     
     public void storeWeightIn(int j, int m, double value){
         if(!weightIn.containsKey(j))
-            weightIn.put(j, new HashMap<>());
+            weightIn.put(j, new HashMap<Integer, Double>());
         
         weightIn.get(j).put(m, value);
     }
@@ -162,7 +162,7 @@ public class ForwardPassCache {
     
     public void storeWeightOut(int j, int m, double value){
         if(!weightOut.containsKey(j))
-            weightOut.put(j, new HashMap<>());
+            weightOut.put(j, new HashMap<Integer, Double>());
         
         weightOut.get(j).put(m, value);
     }
@@ -191,7 +191,7 @@ public class ForwardPassCache {
    
     public void storeWeightCell(int j, int m, double value){
         if(!weightCell.containsKey(j))
-            weightCell.put(j, new HashMap<>());
+            weightCell.put(j, new HashMap<Integer, Double>());
         
         weightCell.get(j).put(m, value);
     }
@@ -211,7 +211,7 @@ public class ForwardPassCache {
     
     public void storeWeightBaked(int k, int m, double value){
         if(!weightBaked.containsKey(k))
-            weightBaked.put(k, new HashMap<>());
+            weightBaked.put(k, new HashMap<Integer, Double>());
         
         weightBaked.get(k).put(m, value);
     }
@@ -312,7 +312,7 @@ public class ForwardPassCache {
     
     public void storeYCell(boolean hat, int j, double value){
         if(!yCell.containsKey(hat))
-            yCell.put(hat, new HashMap<>());
+            yCell.put(hat, new HashMap<Integer, Double>());
         
         yCell.get(hat).put(j, value);
     }
@@ -352,7 +352,7 @@ public class ForwardPassCache {
     
     public void storeCellState(boolean hat, int j, double value){
         if(!cellState.containsKey(hat))
-            cellState.put(hat, new HashMap<>());
+            cellState.put(hat, new HashMap<Integer, Double>());
         
         cellState.get(hat).put(j, value);
     }

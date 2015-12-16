@@ -50,7 +50,7 @@ public class DerivativeCache {
 
     public void storeInputGateDerivativeA(int j, int m, double value) {
         if(!inputGateDerivativeA.containsKey(j))
-            inputGateDerivativeA.put(j, new HashMap<>());
+            inputGateDerivativeA.put(j, new HashMap<Integer, Double>());
         
         inputGateDerivativeA.get(j).put(m, value);
     }
@@ -64,7 +64,7 @@ public class DerivativeCache {
 
     public void storeForgetGateDerivativeA(int j, int m, double value) {
         if(!forgetGateDerivativeA.containsKey(j))
-            forgetGateDerivativeA.put(j, new HashMap<>());
+            forgetGateDerivativeA.put(j, new HashMap<Integer, Double>());
         
         forgetGateDerivativeA.get(j).put(m, value);
     }

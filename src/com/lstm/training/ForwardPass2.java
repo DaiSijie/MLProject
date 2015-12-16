@@ -5,7 +5,7 @@
 
 package com.lstm.training;
 
-import com.lstm.datastructures.ForwardPassCache2;
+import com.lstm.datastructures.ForwardPassCache;
 import com.lstm.network.NetworkDescription;
 
 import static com.lstm.network.Functions.*;
@@ -18,9 +18,9 @@ public class ForwardPass2 {
     private final int numSource;
     private final int numMem;
     
-    private final ForwardPassCache2 cache;
+    private final ForwardPassCache cache;
     
-    public ForwardPass2(NetworkDescription desc, ForwardPassCache2 cache){
+    public ForwardPass2(NetworkDescription desc, ForwardPassCache cache){
         this.cache = cache;
         
         this.numInput = desc.numInput;

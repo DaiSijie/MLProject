@@ -46,7 +46,7 @@ public class BackwardPassCache {
     
     public void storeCell(int j, int m, double value){
         if(!cell.containsKey(j))
-            cell.put(j, new HashMap<>());
+            cell.put(j, new HashMap<Integer, Double>());
         
         cell.get(j).put(m, value);
     }
@@ -57,7 +57,7 @@ public class BackwardPassCache {
     
     public void storeForgetGate(int j, int m, double value){
         if(!forgetGate.containsKey(j))
-            forgetGate.put(j, new HashMap<>());
+            forgetGate.put(j, new HashMap<Integer, Double>());
         
         forgetGate.get(j).put(m, value);
     }
@@ -68,7 +68,7 @@ public class BackwardPassCache {
     
     public void storeForgetGateC(int j, int vprime, double value){
         if(!forgetGateC.containsKey(j))
-            forgetGateC.put(j, new HashMap<>());
+            forgetGateC.put(j, new HashMap<Integer, Double>());
         
        forgetGateC.get(j).put(vprime, value);
     }
@@ -79,7 +79,7 @@ public class BackwardPassCache {
     
     public void storeInputGate(int j, int m, double value){
         if(!inputGate.containsKey(j))
-            inputGate.put(j, new HashMap<>());
+            inputGate.put(j, new HashMap<Integer, Double>());
         
         inputGate.get(j).put(m, value);
     }
@@ -90,7 +90,7 @@ public class BackwardPassCache {
     
     public void storeInputGateC(int j, int vprime, double value){
         if(!inputGateC.containsKey(j))
-            inputGateC.put(j, new HashMap<>());
+            inputGateC.put(j, new HashMap<Integer, Double>());
         
        inputGateC.get(j).put(vprime, value);
     }
@@ -111,7 +111,7 @@ public class BackwardPassCache {
     
     public void storeOutputGate(int j, int m, double value){
         if(!outputGate.containsKey(j))
-            outputGate.put(j, new HashMap<>());
+            outputGate.put(j, new HashMap<Integer, Double>());
         
         outputGate.get(j).put(m, value);
     }
@@ -123,7 +123,7 @@ public class BackwardPassCache {
     
     public void storeOutputUnit(int k, int m, double value){
         if(!outputUnit.containsKey(k))
-            outputUnit.put(k, new HashMap<>());
+            outputUnit.put(k, new HashMap<Integer, Double>());
         
         outputUnit.get(k).put(m, value);
     }
