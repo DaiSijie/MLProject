@@ -1,271 +1,375 @@
+/*
+ *	Author:      Gilbert Maystre
+ *	Date:        Dec 13, 2015
+ */
+
 package com.lstm.datastructures;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
+import com.lstm.network.NetworkDescription;
+
 public class ForwardPassCache {
-    
+
     private final int numInput;
-    private final int numMemBlock;
-    private final int numCells;
-    private final int numOutput;
+    private final int numSource;
     
-    private final Double[][][] weights;       // for storing the weights between units
-    private final Double[] biases;            // for storing the biases for the units in the hidden and output layers
-    private final double[] input;
-    private final Double[] output;
+    //WEIGHTS
+    private final HashMap<Integer, HashMap<Integer, Double>> weightF;
+    private final HashMap<Integer, Double> weightFToCell;
+    private final HashMap<Integer, Double> fBias;
+    private final HashMap<Integer, HashMap<Integer, Double>> weightIn;
+    private final HashMap<Integer, Double> weightInToCell;
+    private final HashMap<Integer, Double> inBias;
+    private final HashMap<Integer, HashMap<Integer, Double>> weightOut;
+    private final HashMap<Integer, Double> weightOutToCell;
+    private final HashMap<Integer, Double> outBias;
+    private final HashMap<Integer, HashMap<Integer, Double>> weightCell;
+    private final HashMap<Integer, Double> cellBias;
+    private final HashMap<Integer, HashMap<Integer, Double>> weightBaked;
+    private final HashMap<Integer, Double> bakedBias;
     
-    private final HashMap<Integer, HashMap<Integer, Double[][]>> memoryBlocks;
+    //NETS
+    private final HashMap<Integer, Double> netIn;
+    private final HashMap<Integer, Double> netF;
+    private final HashMap<Integer, Double> netOut;
+    private final HashMap<Integer, Double> netCell;
+    private final HashMap<Integer, Double> netBaked;
     
-    public ForwardPassCache(int numInput, int numMemBlock, int numCellsInMemBlock, int numOutput) {
-        this.numInput = numInput;
-        this.numMemBlock = numMemBlock;
-        this.numCells = numCellsInMemBlock;
-        this.numOutput = numOutput;
-
-        this.weights = new Double[2][numInput + numMemBlock][(numMemBlock * 4) + numOutput];
-        this.biases = new Double[(numMemBlock * 4) + numOutput];
-        this.memoryBlocks = new HashMap<>();
-
-        this.input = new double[numInput];      //not needed
-        this.output = new Double[numOutput];
+    //Y
+    private final HashMap<Integer, Double> yF;
+    private final HashMap<Integer, Double> yOut;
+    private final HashMap<Integer, Double> yIn;
+    private final HashMap<Boolean, HashMap<Integer, Double>> yCell;
+    private final HashMap<Integer, Double> yBaked;
+    
+    //CELLS
+    private final HashMap<Boolean, HashMap<Integer, Double>> cellState;
+         
+    //INPUT
+    private double[] input;
+    
+    public ForwardPassCache(NetworkDescription description){
+        this.numInput = description.numInput;
+        this.numSource = description.numSource;
+        
+        //WEIGHTS
+        this.weightF = new HashMap<>();
+        this.weightFToCell = new HashMap<>();
+        this.fBias = new HashMap<>();
+        this.weightIn = new HashMap<>();
+        this.weightInToCell = new HashMap<>();
+        this.inBias = new HashMap<>();
+        this.weightOut = new HashMap<>();
+        this.weightOutToCell = new HashMap<>();
+        this.outBias = new HashMap<>();
+        this.weightCell = new HashMap<>();
+        this.cellBias = new HashMap<>();
+        this.weightBaked = new HashMap<>();
+        this.bakedBias = new HashMap<>();
+        
+        //NETS
+        this.netIn = new HashMap<>();
+        this.netF = new HashMap<>();
+        this.netOut = new HashMap<>();
+        this.netCell = new HashMap<>();
+        this.netBaked = new HashMap<>();
+        
+        //Y
+        this.yF = new HashMap<>();
+        this.yOut = new HashMap<>();
+        this.yIn = new HashMap<>();
+        this.yCell = new HashMap<>();
+        this.yBaked = new HashMap<>();
+        
+        //CELLS
+        this.cellState = new HashMap<>();
     }
+    
+    
+    /*
+     * BEGIN WEIGHTS
+     */
+    public double getWeightF(int j, int m){
+        return weightF.get(j).get(m);
+    }
+    
+    public void storeWeightF(int j, int m, double value){
+        if(!weightF.containsKey(j))
+            weightF.put(j, new HashMap<>());
+        
+        weightF.get(j).put(m, value);
+    }
+    
+    public double getWeightFToCell(int j){
+        return weightFToCell.get(j);
+    }
+    
+    public void storeWeightFToCell(int j, double value){
+        weightFToCell.put(j, value);
+    }
+
+    public double getBiasF(int j){
+        return fBias.get(j);
+    }
+    
+    public void storeBiasF(int j, double value){
+       fBias.put(j, value) ;
+    }
+    
+
+    public double getWeightIn(int j, int m){
+        return weightIn.get(j).get(m);
+    }
+    
+    public void storeWeightIn(int j, int m, double value){
+        if(!weightIn.containsKey(j))
+            weightIn.put(j, new HashMap<>());
+        
+        weightIn.get(j).put(m, value);
+    }
+
+    public double getWeightInToCell(int j){
+        return weightInToCell.get(j);
+    }
+    
+    public void storeWeightInToCell(int j, double value){
+        weightInToCell.put(j, value);
+    }
+
+    public double getBiasIn(int j){
+        return inBias.get(j);
+    }
+    
+    public void storeBiasIn(int j, double value){
+        inBias.put(j, value);
+    }
+    
+        
+    public double getWeightOut(int j, int m){
+        return weightOut.get(j).get(m);
+    }
+    
+    public void storeWeightOut(int j, int m, double value){
+        if(!weightOut.containsKey(j))
+            weightOut.put(j, new HashMap<>());
+        
+        weightOut.get(j).put(m, value);
+    }
+    
+    public double getWeightOutToCell(int j){
+        return weightOutToCell.get(j);
+    }
+    
+    public void storeWeightOutToCell(int j, double value){
+        weightOutToCell.put(j, value);
+    }
+    
+    public double getBiasOut(int j){
+        return outBias.get(j);
+    }
+    
+    public void storeBiasOut(int j, double value){
+        outBias.put(j, value);
+    }
+    
+    
+    
+    public double getWeightCell(int j, int m){
+        return weightCell.get(j).get(m);
+    }
+   
+    public void storeWeightCell(int j, int m, double value){
+        if(!weightCell.containsKey(j))
+            weightCell.put(j, new HashMap<>());
+        
+        weightCell.get(j).put(m, value);
+    }
+    
+    public double getBiasCell(int j){
+        return cellBias.get(j);
+    }
+    
+    public void storeBiasCell(int j, double value){
+        cellBias.put(j, value);
+    }
+    
+    
+    public double getWeightBaked(int k, int m){
+        return weightBaked.get(k).get(m);
+    }
+    
+    public void storeWeightBaked(int k, int m, double value){
+        if(!weightBaked.containsKey(k))
+            weightBaked.put(k, new HashMap<>());
+        
+        weightBaked.get(k).put(m, value);
+    }
+   
+    public double getBakedBias(int k){
+        return bakedBias.get(k);
+    }
+    
+    public void storeBakedBias(int k, double value){
+        bakedBias.put(k, value);
+    }
+    
+    /*
+     * END WEIGHTS
+     */
+    
+    
+    /*
+     * BEGIN NETS
+     */
+    
+    public double getNetIn(int j){
+        return netIn.get(j);
+    }
+    
+    public void storeNetIn(int j, double value){
+        netIn.put(j, value);
+    }
+    
+    public double getNetF(int j){
+        return netF.get(j);
+    }
+    
+    public void storeNetF(int j, double value){
+        netF.put(j, value);
+    }
+    
+    public double getNetOut(int j){
+        return netOut.get(j);
+    }
+    
+    public void storeNetOut(int j, double value){
+        netOut.put(j, value);
+    }
+    
+    public double getNetCell(int j){
+        return netCell.get(j);
+    }
+    
+    public void storeNetCell(int j, double value){
+        netCell.put(j, value);
+    }
+    
+    public double getNetBaked(int k){
+        return netBaked.get(k);
+    }
+    
+    public void storeNetBaked(int k, double value){
+        netBaked.put(k, value);
+    }
+    
+    /*
+     * END NETS
+     */
+
+    
+    /*
+     * BEGIN Y
+     */
+    
+    public double getYF(int j){
+        return yF.get(j);
+    }
+    
+    public void storeYF(int j, double value){
+        yF.put(j, value);
+    }
+    
+    public double getYOut(int j){
+        return yOut.get(j);
+    }
+    
+    public void storeYOut(int j, double value){
+        yOut.put(j, value);
+    }
+    
+    public double getYIn(int j){
+        return yIn.get(j);
+    }
+    
+    public void storeYIn(int j, double value){
+        yIn.put(j, value);
+    }
+    
+    public double getYCell(boolean hat, int j){
+        return yCell.get(hat).get(j);
+    }
+    
+    public void storeYCell(boolean hat, int j, double value){
+        if(!yCell.containsKey(hat))
+            yCell.put(hat, new HashMap<>());
+        
+        yCell.get(hat).put(j, value);
+    }
+    
+    public double getYBaked(int k){
+        return yBaked.get(k);
+    }
+    
+    public void storeYBaked(int k, double value){
+        yBaked.put(k, value);
+    }
+    
+    public double smartGetYM(boolean hat, int m){
+        if(0 <= m && m < numInput){
+            return input[m];
+        }
+        else if(m <= numInput && m < numSource){
+            return getYCell(hat, m - numInput);
+        }
+        else{
+            throw new IllegalArgumentException("Invalid m passed to smart y hat");
+        }
+    }
+        
+    /*
+     * END Y
+     */
+    
+    
+    /*
+     * BEGIN CELLS
+     */
+    
+    public double getCellState(boolean hat, int j){
+        return cellState.get(hat).get(j);
+    }
+    
+    public void storeCellState(boolean hat, int j, double value){
+        if(!cellState.containsKey(hat))
+            cellState.put(hat, new HashMap<>());
+        
+        cellState.get(hat).put(j, value);
+    }
+
+    public double getCellPeephole(boolean hat, int j, int vprime){
+        return getCellState(hat, j);
+    }
+    
+    /*
+     * END CELLS
+     */
 
     /*
-        Weights (4 x 7): [0] is output values [1] is weight
-
-        --> left hand side is the "from", top is the "to"
-        ----> example: [0,0] is from input1 to memoryBlock
-
-        the YES/NO shows if there is a "unit-to-unit" connection. Only the cells with YES should have a weight
-
-                        memoryBlock1    inGate1      forgetGate1     outGate1        memoryBlock2    inGate2...      output1     output2     output3
-        input1          YES             YES          YES             YES             ...             ...             YES         YES         YES
-        input2          YES             YES          YES             YES             ...             ...             YES         YES         YES
-        input3          YES             YES          YES             YES             ...             ...             YES         YES         YES
-        memoryBlock1    YES             YES          YES             YES             ...             ...             YES         YES         YES
-        memoryBlock2    ...             ...          ...             ...             ...             ...             ...         ...         ...
-
-    */
-
+     * BEGIN INPUT
+     */
+    
+    public void storeInput(double[] newInput){
+        input = Arrays.copyOf(newInput, newInput.length);
+    }
+    
+    public double[] getInput(){
+        return Arrays.copyOf(input, input.length);
+    }
+    
     /*
-        Biases (1 x 7):
-                        memoryBlock     inGate      forgetGate      outGate     output1     output2     output3
-        value           -               -           -               -           -           -           -
-    */
-
-    //bias weights to input gate, forget gate and output gate are initialized with 1.0, 2.0 and 2.0. All other
-    //weights are initialized randomly in the range [ 0.1, 0.1].
-
-    /*
-        MemoryBlocks (memoryBlock_j x cells_v x [Value or Weight][4]):
-                       cellState       inGatePeephole      forgetGatePeephole      outGatePeephole
-        value          -               -                   -                       -
-        weight         null            -                   -                       -
-    */
-
-    // TODO Peephole initialization not implemented yet
-
-    /* Column Summation for Weighted Input */
-    private double weightedInputSummation(int column){
-        double cellInput = 0.0;
-
-        for (int row = 0; row < weights.length; row++) {
-            cellInput += weights[0][row][column] * weights[1][row][column];
-        }
-
-        cellInput += biases[column];
-
-        return cellInput;
-    }
-
-    public double getMemoryBlockInput(int block_j){
-        int index = block_j * 4;
-        return weightedInputSummation(index);
-    }
-
-    public double getInputGateInput(int block_j){
-        int index = (block_j * 4) + 1;
-        return weightedInputSummation(index);
-    }
-
-    public double getForgetGateInput(int block_j){
-        int index = (block_j * 4) + 2;
-        return weightedInputSummation(index);
-    }
-
-    public double getOutputGateInput(int block_j){
-        int index = (block_j * 4) + 3;
-        return weightedInputSummation(index);
-    }
-
-    public double getOutputNodeInput(int output_k){
-        int index = (numMemBlock + 1) * 4 + output_k;
-        return weightedInputSummation(index);
-    }
-    /* Column Summation for Weighted Input */
-
-    /* Start Input Layer */
-    public double getInputNodeOutput(int input_i){
-        int index = input_i;
-        return weights[0][index][0];
-    }
-
-    public void storeInputNodeOutput(int input_i, double value){
-        int index = input_i;
-        for (int col = 0; col < weights[0][index].length; col++){
-            weights[0][index][col] = value;
-        }
-    }
-    /* End Input Layer */
-
-    /* Start Hidden Layer */
-    public double getMemoryBlockOutput(int block_j){
-        int index = numInput + block_j;
-        return weights[0][index][0];
-    }
-
-    public void storeMemoryBlockOutput(int block_j, double value){
-        int index = numInput + block_j;
-
-        for (int col = 0; col < weights[0][index].length; col++) {
-            weights[0][index][col] = value;
-        }
-    }
-    /* End Hidden Layer */
-
-    /* Start Output Layer */
-    public double getOutputNodeOutput(int k){
-        return output[k];
-    }
-
-    public void storeOutputNodeOutput(int k, double value){
-        output[k] = value;
-    }
-    /* End Output Layer */
-
-    /* Start Peephole and Cell State */
-    public double getInputGateOutput(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[1][1];
-    }
-
-    public double getForgetGateOutput(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[1][2];
-    }
-
-    public double getOutputGateOutput(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[1][2];
-    }
-
-    public void storeInputGateOutput(int j, int vprime, double value){
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-
-        memoryBlocks.get(j).get(vprime)[1][1] = value;
-    }
-
-    public void storeForgetGateOutput(int j, int vprime, double value) {
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-
-        memoryBlocks.get(j).get(vprime)[1][2] = value;
-    }
-
-    public void storeOutputGateOutput(int j, int vprime, double value) {
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-
-        memoryBlocks.get(j).get(vprime)[1][3] = value;
-    }
-
-    public double getCellState(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[0][0];
-    }
-
-    public double getInputGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[0][1];
-    }
-
-    public double getForgetGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[0][2];
-    }
-
-    public double getOutputGatePeephole(int j, int vprime){
-        return memoryBlocks.get(j).get(vprime)[0][3];
-    }
-
-    public void storeCellState(int j, int vprime, double value){
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-        memoryBlocks.get(j).get(vprime)[0][0] = value;
-    }
-
-    public void storeInputGatePeephole(int j, int vprime, double value){
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-
-        memoryBlocks.get(j).get(vprime)[0][1] = value;
-    }
-
-    public void storeForgetGatePeephole(int j, int vprime, double value){
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-
-        memoryBlocks.get(j).get(vprime)[0][2] = value;
-    }
-
-    public void storeOutputGatePeephole(int j, int vprime, double value){
-        if (!memoryBlocks.containsKey(j)){
-            memoryBlocks.put(j, new HashMap<Integer, Double[][]>());
-            memoryBlocks.get(j).put(vprime, new Double[2][4]);
-        }
-        memoryBlocks.get(j).get(vprime)[0][3] = value;
-    }
-    /* End Peephole and Cell State */
-
-    /* Add functions to update the weights for the backward pass */
-    public double getMemoryBlockToOutputWeights(int from, int to)
-    {
-        return weights[1][numInput + from][(numMemBlock * 4) + to];
-    }
-
-    /*Misc. get outputs. TODO: Eliminate need of knowledge of the weights table. */
-    public double get_yhat_inputToOutputNode(int from, int to)  //to is k
-    {
-        return weights[0][from][(numMemBlock * 4) + to];
-    }
-
-    public double get_yhat_inputToOutputGate(int from, int j)
-    {
-        return weights[0][from][(j * 4) + 3];
-    }
-    
-    public double getYHat(int m){
-        if(m < numInput)
-            return getExample(m);
-        else
-            return getOutputGateOutput(m - input.length, 0);
-    }
-    
-    public void setExample(double[] example){
-        for(int k = 0; k < example.length; k++){
-            this.input[k] = example[k];
-        }
-    }
-    
-    public double getExample(int k){
-        return input[k];
-    }
+     * END INPUT
+     */
 
 }

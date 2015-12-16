@@ -54,9 +54,11 @@ public class ForwardPass2 {
             cache.storeBiasIn(j, -1.0);
             cache.storeBiasCell(j, next());
 
-            cache.storeCellState(j, 0);  
+            cache.storeCellState(true, j, 0);
+            cache.storeCellState(false, j, 0);
             
-            cache.storeYCell(j, 0);
+            cache.storeYCell(true, j, 0);
+            cache.storeYCell(false, j, 0);
         }
         
         for(int k = 0; k < numInput; k++){
@@ -69,6 +71,12 @@ public class ForwardPass2 {
     
     public void doRound(double[] newInput){
         cache.storeInput(newInput);
+    
+        //roll over
+        for(int j = 0; j < numMem; j++){
+            cache.storeYCell(true, j, cache.getYCell(false, j));
+            cache.storeCellState(true, j, cache.getCellState(false, j));
+        }
         
         for(int j = 0; j < numMem; j++){
             step1A(j);
@@ -83,14 +91,14 @@ public class ForwardPass2 {
     private void step1A(int j){
         double sum = 0;
         for(int m = 0; m < numSource; m++){
-            sum += cache.getWeightIn(j, m) * cache.smartGetYHatM(m);
+            sum += cache.getWeightIn(j, m) * cache.smartGetYM(true, m);
         }
         
         //the bias
         sum += cache.getBiasIn(j);
                 
         //the infamous peephole
-        sum += cache.getWeightInToCell(j) * cache.getCellState(j);
+        sum += cache.getWeightInToCell(j) * cache.getCellState(true, j);
         
         cache.storeNetIn(j, sum);
         cache.storeYIn(j, f(sum));
@@ -99,14 +107,14 @@ public class ForwardPass2 {
     private void step1B(int j){
         double sum = 0;
         for(int m = 0; m < numSource; m++){
-            sum += cache.getWeightF(j, m) * cache.smartGetYHatM(m);
+            sum += cache.getWeightF(j, m) * cache.smartGetYM(true, m);
         }
         
         //the bias
         sum += cache.getBiasF(j);
         
         //the infamous peephole
-        sum += cache.getWeightFToCell(j) * cache.getCellState(j);
+        sum += cache.getWeightFToCell(j) * cache.getCellState(true, j);
         
         cache.storeNetF(j, sum);
         cache.storeYF(j, f(sum));
@@ -115,7 +123,7 @@ public class ForwardPass2 {
     private void step1C(int j){
         double sum = 0;
         for(int m = 0; m < numSource; m++){
-            sum += cache.getWeightCell(j, m) * cache.smartGetYHatM(m);
+            sum += cache.getWeightCell(j, m) * cache.smartGetYM(true, m);
         }
         
         //bias
@@ -123,22 +131,22 @@ public class ForwardPass2 {
         
         cache.storeNetCell(j, sum);
         
-        double cellState = (cache.getYF(j) * cache.getCellState(j)) + (cache.getYIn(j) * g(sum));
-        cache.storeCellState(j, cellState);
+        double cellState = (cache.getYF(j) * cache.getCellState(true, j)) + (cache.getYIn(j) * g(sum));
+        cache.storeCellState(false, j, cellState);
     }
     
     private void step2A(int j){
         double sum = 0;
         
         for(int m = 0; m < numSource; m++){
-            sum += cache.getWeightOut(j, m) * cache.smartGetYHatM(m);
+            sum += cache.getWeightOut(j, m) * cache.smartGetYM(true, m);
         }
         
         //bias
         sum += cache.getBiasOut(j);
         
         //the infamous peephole
-        sum += cache.getWeightOutToCell(j) * cache.getCellState(j);
+        sum += cache.getWeightOutToCell(j) * cache.getCellState(false, j);
         
         cache.storeNetOut(j, sum);
         cache.storeYOut(j, f(sum));
@@ -147,16 +155,16 @@ public class ForwardPass2 {
     }
     
     private void step2B(int j){
-        double yCell = cache.getYOut(j) * cache.getCellState(j);
+        double yCell = cache.getYOut(j) * cache.getCellState(false, j);
         
-        cache.storeYCell(j, yCell);
+        cache.storeYCell(false, j, yCell);
     }
     
     private void step3(){
         for(int k = 0; k < numInput; k++){
             double sum = 0;
             for(int m = 0; m < numSource; m++){
-                sum += cache.getWeightBaked(k, m) * cache.smartGetYHatM(m);
+                sum += cache.getWeightBaked(k, m) * cache.smartGetYM(false, m);
             }
             
             //bias

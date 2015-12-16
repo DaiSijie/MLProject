@@ -2,7 +2,6 @@ package com.lstm.training;
 
 import com.lstm.datastructures.DerivativeCache;
 import com.lstm.datastructures.ForwardPassCache;
-import com.lstm.datastructures.ForwardPassCache2;
 import com.lstm.network.NetworkDescription;
 
 import static com.lstm.network.Functions.*;
@@ -10,14 +9,14 @@ import static com.lstm.network.Functions.*;
 public class DerivativeComputation {
 
     private final DerivativeCache derivativeCache;
-    private final ForwardPassCache2 forwardCache;
+    private final ForwardPassCache forwardCache;
     
     private final int numMemBlock;
     private final int numSourceUnit;
     
-    public DerivativeComputation(NetworkDescription description, DerivativeCache derivativeCache, ForwardPassCache2 forwardPassCache){
-        this.derivativeCache = derivativeCache;
-        this.forwardCache = forwardPassCache;
+    public DerivativeComputation(NetworkDescription description, DerivativeCache dcache, ForwardPassCache fcache){
+        this.derivativeCache = dcache;
+        this.forwardCache = fcache;
         
         this.numMemBlock = description.numMemBlock;
         this.numSourceUnit = description.numSource;
@@ -26,7 +25,7 @@ public class DerivativeComputation {
     public void init(){
         for (int j = 0; j < numMemBlock; j++) {
             for(int m = 0; m < numSourceUnit; m++){
-                derivativeCache.storeCellDerivative(j, m, 0);
+                derivativeCache.storeCellDerivative(j, m, 0.);
                 derivativeCache.storeInputGateDerivativeA(j, m, 0);
                 derivativeCache.storeForgetGateDerivativeA(j, m, 0);
             }
@@ -55,7 +54,7 @@ public class DerivativeComputation {
             double a = forwardCache.getYF(j);
             double b = forwardCache.getNetCell(j);
             double c = forwardCache.getYIn(j);
-            double d = forwardCache.smartGetYHatM(m);
+            double d = forwardCache.smartGetYM(true, m);
 
             double newValue = oldValue * a + dg(b) * c * d;
 
@@ -72,7 +71,7 @@ public class DerivativeComputation {
             double a = forwardCache.getYF(j);
             double b = forwardCache.getNetCell(j);
             double c = forwardCache.getNetIn(j);
-            double d = forwardCache.smartGetYHatM(m);
+            double d = forwardCache.smartGetYM(true, m);
 
             double newValue = oldValue * a + g(b) * df(c) * d;
 
@@ -85,10 +84,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getInputGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j, 0);
-            double b = 1; //to fetch from array?
-            double c = forwardCache.getInputGateInput(j);
-            double d = 1; //to fetch from array?
+            double a = forwardCache.getYF(j);
+            double b = forwardCache.getNetCell(j);
+            double c = forwardCache.getNetIn(j);
+            double d = forwardCache.getCellPeephole(true, j, vprime); //to fetch from array?
 
             double newValue = oldValue * a + g(b) * df(c) * d;
 
@@ -102,10 +101,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeA(j, m);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j, 0);
-            double b = 1; //to fetch from array?
-            double c = forwardCache.getForgetGateInput(j);
-            double d = 1; //to fetch from array?
+            double a = forwardCache.getYF(j);
+            double b = forwardCache.getCellState(true, j);
+            double c = forwardCache.getNetF(j);
+            double d = forwardCache.smartGetYM(true, m); //to fetch from array?
 
             double newValue = oldValue * a + b * df(c) * d;
 
@@ -119,10 +118,10 @@ public class DerivativeComputation {
             double oldValue = derivativeCache.getForgetGateDerivativeB(j, vprime);
 
             //vars are in the same order as they appear in the formula
-            double a = forwardCache.getForgetGateOutput(j, 0);
-            double b = 1; //to fetch from array?
-            double c = forwardCache.getForgetGateInput(j);
-            double d = 1; //to fetch from array?
+            double a = forwardCache.getYF(j);
+            double b = forwardCache.getCellState(true, j); //to fetch from array?
+            double c = forwardCache.getNetF(j);
+            double d = forwardCache.getCellPeephole(true, j, vprime); //to fetch from array?
 
             double newValue = oldValue * a + b * df(c) * d;
 
