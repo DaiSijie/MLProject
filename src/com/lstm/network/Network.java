@@ -14,12 +14,15 @@ public class Network {
     private final DerivativeComputation derivativeComputation;
     private final BackwardPass backwardPass;
     
+    private final ForwardPassCache fwdcache;
+    
     private final int numOutput;
     
     public Network(NetworkDescription description, Generator gen) {
         //we build everything for the forward pass
         ForwardPassCache fwdcache = new ForwardPassCache(description);
         this.forwardPass = new ForwardPass(description, fwdcache);
+        this.fwdcache = fwdcache;
         
         //we build everything for the derivative computation
         DerivativeCache dcache = new DerivativeCache();
@@ -40,18 +43,33 @@ public class Network {
         train(gen);
     }
     
+    private int i = 0;
+    
     private void train(Generator gen){
         //for all token in the generator, figure out the input from the generator and do a round
-        double[] input = null;
         double[] target = null;
         
-        doRound(input, target);
+        while(gen.hasNext()){
+            if(target == null){
+                target = gen.nextAsVector();
+            }
+            double[] input = target;
+            target = gen.nextAsVector();
+            
+            doRound(input, target);
+        }
     }
     
     private void doRound(double[] input, double[] target){
         forwardPass.doRound(input);
         derivativeComputation.doRound();
         backwardPass.doRound(target);
+        
+        if(i == 0 || i == 1 || i == 3){
+            fwdcache.printWeights();
+        }
+        
+        i++;
     }
 
 

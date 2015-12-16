@@ -103,12 +103,10 @@ public class BackwardPass {
                 double ym = forwardCache.smartGetYM(false, m);
                 double deltak = backwardCache.getDelta(k);
 
+                //momentum alg.
                 double wkm = alpha * ym * deltak;
                 double oldwkm = backwardCache.getOutputUnit(k, m);
-
-                //momentum alg.
                 double newWeight = forwardCache.getWeightBaked(k, m) - alpha * wkm + momentum * oldwkm;
-
                 forwardCache.storeWeightBaked(k, m, newWeight);
 
                 //storing old one now.

@@ -6,6 +6,7 @@ import com.lstm.generator.Generator;
 import com.lstm.generator.NoiseAdder;
 import com.lstm.generator.SimpleCFLGenerator;
 import com.lstm.generator.SimpleCSLGenerator;
+import com.lstm.network.Network;
 import com.lstm.network.NetworkDescription;
 import com.lstm.training.ForwardPass;
 
@@ -31,25 +32,11 @@ public class LSTM {
         double momentum = 0.99;
 
         NetworkDescription n = new NetworkDescription(numInput, numMem, learningrate, momentum);
-        ForwardPassCache fwd = new ForwardPassCache(n);
+        Generator ab = new SimpleCFLGenerator(100);
         
-        ForwardPass f = new ForwardPass(n, fwd);
+        Network net = new Network(n, ab);
         
-        double[] example = {0, 0, 1};
-        
-        f.init();
-        f.doRound(example);
-        
-        for(int i = 0; i < n.numOutput; i++){
-            System.out.println(fwd.getYBaked(i));
-        }
-        
-        
-        double[] example2 = {1, 0, 0};
-        f.doRound(example2);
-        for(int i = 0; i < n.numOutput; i++){
-            System.out.println(fwd.getYBaked(i));
-        }
+       
         
         
         

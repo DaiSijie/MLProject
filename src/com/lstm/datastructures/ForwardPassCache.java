@@ -50,6 +50,15 @@ public class ForwardPassCache {
     //INPUT
     private double[] input;
     
+    public void printWeights(){
+        System.out.println("For weight out, first mem block");
+        for(int m = 0; m < numSource; m++){
+            System.out.print(this.getWeightOut(0, m) + ", ");
+        }
+        System.out.println("\n\n");
+    }
+    
+    
     public ForwardPassCache(NetworkDescription description){
         this.numInput = description.numInput;
         this.numSource = description.numSource;
